@@ -1,0 +1,51 @@
+{
+	"variables": {
+		"cloud_token": "{{ env `ATLAS_API_TOKEN` }}"
+	},
+	"builders": [
+		{
+			"type": "vmware-vmx",
+			"source_path": "seed-{{user `version`}}/ClearLinux-{{user `version`}}.vmx",
+			"boot_wait": "20s",
+			"ssh_username": "root",
+			"ssh_password": "V@grant!",
+			"ssh_port": 22,
+			"ssh_wait_timeout": "3m",
+			"boot_command": [
+				"root<enter><wait>V@grant!<enter><wait>V@grant!<enter><wait>",
+				"swupd autoupdate --disable<enter>",
+				"mkdir -p /etc/ssh<enter>",
+				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
+				"swupd bundle-add openssh-server<enter>",
+				"systemctl start sshd.socket<enter>"
+			],
+			"shutdown_command": "sudo /usr/bin/poweroff -p",
+			"vm_name": "{{ user `name` }}",
+			"vmx_data": {
+				"cpuid.coresPerSocket": "1",
+				"memsize": "1024",
+				"numvcpus": "2"
+			}
+		}
+	],
+	"provisioners": [
+		{
+			"type": "shell",
+			"scripts": [
+				"scripts/01_ClearLinux_setup.sh",
+				"scripts/02_vagrant_user.sh",
+				"scripts/03_sshd.sh"
+			],
+			"pause_before": "5s"
+		}
+	],
+	"post-processors": [
+		[
+			{
+				"type": "vagrant",
+				"output": "{{user `name` }}-{{ user `version`}}.{{ .Provider }}.box",
+				"vagrantfile_template": "Vagrantfile"
+			}
+		]
+	]
+}
