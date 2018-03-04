@@ -6,3 +6,5 @@ set -o nounset
 set -o xtrace
 
 swupd bundle-add sysadmin-basic network-basic storage-utils
+
+timedatectl set-ntp true
