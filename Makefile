@@ -44,8 +44,35 @@ $(NV).vmware.box: seed-$(VERSION)
 		cd ..; rm -rf tmp;\
 	)
 
+publish:
+	# Create a new version
+	curl \
+		--header "Content-Type: application/json" \
+		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
+		https://app.vagrantup.com/api/v1/box/$(OWNER)/$(BOX_NAME)/versions \
+		--data '{ "version": { "version": "$(VERSION)", "description": "#### **release notes** - https://download.clearlinux.org/releases/21110/clear/RELEASENOTES\n\nbuilt with **[ClearLinux-packer](https://github.com/AntonioMeireles/ClearLinux-packer)**.\n**[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)** is welcome!" } }'
+	# Create a new provider
+	curl \
+		--header "Content-Type: application/json" \
+		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
+		https://app.vagrantup.com/api/v1/box/$(OWNER)/$(BOX_NAME)/version/$(VERSION)/providers \
+		--data '{ "provider": { "name": "vmware_fusion" } }'
+	# Perform the upload
+	curl $$(echo $$(curl -sSL \
+		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
+		https://app.vagrantup.com/api/v1/box/$(OWNER)/$(BOX_NAME)/version/$(VERSION)/provider/vmware_fusion/upload | \
+		jq .upload_path| sed -e 's,",,g')) --request PUT --upload-file $(BOX_NAME)-$(VERSION).vmware.box
+release:
+	# Release the version
+	curl \
+		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
+		https://app.vagrantup.com/api/v1/box/$(OWNER)/$(BOX_NAME)/version/$(VERSION)/release \
+		--request PUT
+
 addbox: $(NV).vmware.box
 	vagrant box add -f $(REPOSITORY) $(NV).vmware.box --provider vmware_fusion
 
 clean:
 	rm -rf seed-$(VERSION) $(NV).vmware.box
+
+
