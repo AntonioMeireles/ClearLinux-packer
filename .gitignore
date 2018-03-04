@@ -1,3 +1,4 @@
 seed-*
 *.vmdk
 *.box
+.vscode
