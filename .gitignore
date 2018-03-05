@@ -2,3 +2,4 @@ seed-*
 *.vmdk
 *.box
 .vscode
+.vagrant
