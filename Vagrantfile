@@ -11,6 +11,7 @@ Vagrant.configure(2) do |config|
   config.vm.box_check_update = false
   # always use Vagrants insecure key
   config.ssh.insert_key = false
+  config.ssh.username = "clear"
 
   %w[vmware_workstation vmware_fusion].each do |vmware_provider|
     config.vm.provider(vmware_provider) do |vmware|

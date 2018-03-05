@@ -5,27 +5,35 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-useradd --create-home --user-group --password '$6$rounds=656000$OY1EmeRe9//dqf8D$KRUcAe5ezDDL4hDe7nCGdURxev0jnIpOAAtfFzhPdd9wmNouedwX7EMxUaF16yrxxOUgpQlrpHVsZkIokXDKv0' vagrant
+export VAGRANT_USER="${VAGRANT_USER:-clear}"
+export VAGRANT_PASSWORD='$6$rounds=656000$OY1EmeRe9//dqf8D$KRUcAe5ezDDL4hDe7nCGdURxev0jnIpOAAtfFzhPdd9wmNouedwX7EMxUaF16yrxxOUgpQlrpHVsZkIokXDKv0'
+export VAGRANT_HOME="/home/${VAGRANT_USER}"
+export DOT_SSH="${VAGRANT_HOME}/.ssh"
+export KEYS_URL="https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/"
+export SUDOERS="/etc/sudoers.d/vagrant"
 
-mkdir -p /etc/sudoers.d
+useradd --create-home --user-group --password ${VAGRANT_PASSWORD} "${VAGRANT_USER}"
 
-echo 'Defaults:vagrant !requiretty' > /etc/sudoers.d/vagrant
-echo '#Defaults !visiblepw' >> /etc/sudoers.d/vagrant
-echo 'Defaults env_keep += "SSH_AUTH_SOCK"' >> /etc/sudoers.d/vagrant
-echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/vagrant
+mkdir -p "$(dirname ${SUDOERS})"
 
-chmod 0440 /etc/sudoers.d/vagrant
+{
+	echo "Defaults:${VAGRANT_USER} !requiretty"
+	echo '#Defaults !visiblepw'
+	echo 'Defaults env_keep += "SSH_AUTH_SOCK"'
+	echo "${VAGRANT_USER} ALL=(ALL) NOPASSWD: ALL"
+} >> "${SUDOERS}"
 
-mkdir -p /home/vagrant/.ssh
+chmod 0440 "${SUDOERS}"
 
-curl -o /home/vagrant/.ssh/vagrant https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant
-curl -o /home/vagrant/.ssh/vagrant.pub https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub
+mkdir -p "${DOT_SSH}"
 
-cat /home/vagrant/.ssh/vagrant.pub >> /home/vagrant/.ssh/authorized_keys
+curl -o "${DOT_SSH}/vagrant" "${KEYS_URL}/vagrant"
+curl -o "${DOT_SSH}/vagrant.pub" "${KEYS_URL}/vagrant.pub"
 
-chown -R vagrant:vagrant /home/vagrant/.ssh
+cat "${DOT_SSH}/vagrant.pub" >> "${DOT_SSH}/authorized_keys"
 
-chmod 0700 /home/vagrant/.ssh
-chmod 0640 /home/vagrant/.ssh/authorized_keys /home/vagrant/.ssh/vagrant.pub
-chmod 0600 /home/vagrant/.ssh/vagrant
+chown -R "${VAGRANT_USER}":"${VAGRANT_USER}" "${DOT_SSH}"
+chmod 0700 "${DOT_SSH}"
+chmod 0640 "${DOT_SSH}/authorized_keys" "${DOT_SSH}/vagrant.pub"
+chmod 0600 "${DOT_SSH}/vagrant"
 
