@@ -1,7 +1,8 @@
 ENV['LC_ALL'] = 'en_US.UTF-8'
-
-['vagrant-guests-clearlinux'].each do |plugin|
-  exec "vagrant plugin install #{plugin};vagrant #{ARGV.join(' ')}" unless Vagrant.has_plugin? plugin || ARGV[0] == 'plugin'
+[
+  { :name => "vagrant-guests-clearlinux", :version => ">= 1.0.7" }
+].each do |plugin|
+  exec "vagrant plugin install #{plugin};vagrant #{ARGV.join(' ')}" unless Vagrant.has_plugin?(plugin[:name], plugin[:version]) || ARGV[0] == 'plugin'
 end
 
 Vagrant.configure(2) do |config|
