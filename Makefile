@@ -50,7 +50,7 @@ publish:
 		--header "Content-Type: application/json" \
 		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
 		https://app.vagrantup.com/api/v1/box/$(OWNER)/$(BOX_NAME)/versions \
-		--data '{ "version": { "version": "$(VERSION)", "description": "#### **release notes** - https://download.clearlinux.org/releases/21110/clear/RELEASENOTES\n\nbuilt with **[ClearLinux-packer](https://github.com/AntonioMeireles/ClearLinux-packer)**.\n**[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)** is welcome!" } }'
+		--data '{ "version": { "version": "$(VERSION)", "description": "#### **release notes** - https://download.clearlinux.org/releases/$(VERSION)/clear/RELEASENOTES\n\nbuilt with **[ClearLinux-packer](https://github.com/AntonioMeireles/ClearLinux-packer)**.\n**[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)** is welcome!" } }'
 	# Create a new provider
 	curl \
 		--header "Content-Type: application/json" \
