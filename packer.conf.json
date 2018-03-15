@@ -1,6 +1,6 @@
 {
 	"variables": {
-		"cloud_token": "{{ env `ATLAS_API_TOKEN` }}"
+		"cloud_token": "{{ env `VAGRANT_CLOUD_TOKEN` }}"
 	},
 	"builders": [
 		{
