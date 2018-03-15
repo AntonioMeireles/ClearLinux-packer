@@ -58,10 +58,11 @@ publish:
 		https://app.vagrantup.com/api/v1/box/$(OWNER)/$(BOX_NAME)/version/$(VERSION)/providers \
 		--data '{ "provider": { "name": "vmware_fusion" } }'
 	# Perform the upload
-	curl $$(echo $$(curl -sSL \
+	curl --progress-bar $$(echo $$(curl -sSL \
 		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
 		https://app.vagrantup.com/api/v1/box/$(OWNER)/$(BOX_NAME)/version/$(VERSION)/provider/vmware_fusion/upload | \
-		jq .upload_path| sed -e 's,",,g')) --request PUT --upload-file $(BOX_NAME)-$(VERSION).vmware.box
+		jq .upload_path| sed -e 's,",,g')) --request PUT --upload-file $(BOX_NAME)-$(VERSION).vmware.box | tee /dev/null
+
 release:
 	# Release the version
 	curl \
