@@ -76,4 +76,7 @@ addbox: $(NV).vmware.box
 clean:
 	rm -rf seed-$(VERSION) $(NV).vmware.box
 
+clean-all:
+	rm -rf seed-* *.box *.vmdk
+
 
