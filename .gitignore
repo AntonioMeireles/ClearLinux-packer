@@ -1,5 +1,5 @@
-seed-*
-*.vmdk
-*.box
+media/
+boxes/
+output-vmware-vmx/
 .vscode
 .vagrant
