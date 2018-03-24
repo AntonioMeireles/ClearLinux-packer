@@ -33,11 +33,12 @@ $(MEDIADIR)/seed-$(VERSION): $(MEDIADIR)/$(VMDK)
 		gsed -i "s,VMDK_SIZE,$$(/usr/bin/stat -f"%z" $(VMDK))," $(BOX_NAME)-* )
 	@echo "vmware fusion VM (v$(VERSION)) syntetised from vmdk"
 
-box: $(BOXDIR)/$(NV).vmware.box
-
-$(BOXDIR)/$(NV).vmware.box: $(MEDIADIR)/seed-$(VERSION)
+boxes: $(MEDIADIR)/$(NV).ova
 	@mkdir -p $(BOXDIR)
-	packer build -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.json
+	packer build --force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.json
+
+$(MEDIADIR)/$(NV).ova: $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx
+	ovftool $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx $(MEDIADIR)/$(NV).ova
 
 release:
 	# Release the version

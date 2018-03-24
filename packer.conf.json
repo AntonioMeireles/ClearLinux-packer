@@ -4,6 +4,77 @@
 	},
 	"builders": [
 		{
+			"type": "virtualbox-ovf",
+			"source_path": "media/ClearLinux-{{user `version`}}.ova",
+			"boot_wait": "20s",
+			"ssh_username": "root",
+			"ssh_password": "V@grant!",
+			"output_directory": "boxes",
+			"ssh_port": 22,
+			"ssh_wait_timeout": "3m",
+			"vm_name": "{{ user `name` }}",
+			"guest_additions_mode": "disable",
+			"boot_command": [
+				"root<enter><wait>V@grant!<enter><wait>V@grant!<enter><wait>",
+				"swupd autoupdate --disable<enter>",
+				"mkdir -p /etc/ssh<enter>",
+				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
+				"swupd bundle-add openssh-server<enter>",
+				"systemctl start sshd.socket<enter>"
+			],
+			"shutdown_command": "sudo /usr/bin/poweroff -p",
+			"vm_name": "{{ user `name` }}",
+			"vboxmanage": [
+				[
+					"modifyvm",
+					"{{.Name}}",
+					"--memory",
+					"1024"
+				], [
+					"modifyvm",
+					"{{.Name}}",
+					"--ostype",
+					"Linux26_64"
+				], [
+					"modifyvm",
+					"{{.Name}}",
+					"--cpus",
+					"2"
+				], [
+					"modifyvm",
+					"{{.Name}}",
+					"--chipset",
+					"ich9"
+				], [
+					"modifyvm",
+					"{{.Name}}",
+					"--firmware",
+					"efi"
+				], [
+					"modifyvm",
+					"{{.Name}}",
+					"--paravirtprovider",
+					"kvm"
+				], [
+					"modifyvm",
+					"{{.Name}}",
+					"--rtcuseutc",
+					"on"
+				], [
+					"modifyvm",
+					"{{.Name}}",
+					"--boot1",
+					"disk"
+				],
+				[
+					"modifyvm",
+					"{{.Name}}",
+					"--longmode",
+					"on"
+				]
+			]
+		},
+		{
 			"type": "vmware-vmx",
 			"source_path": "media/seed-{{user `version`}}/ClearLinux-{{user `version`}}.vmx",
 			"boot_wait": "20s",
