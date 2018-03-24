@@ -3,3 +3,4 @@ boxes/
 output-vmware-vmx/
 .vscode
 .vagrant
+packer-cache
