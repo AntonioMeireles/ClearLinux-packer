@@ -1,0 +1,59 @@
+{
+	"variables": {
+		"cloud_token": "{{ env `VAGRANT_CLOUD_TOKEN` }}"
+	},
+	"builders": [
+		{
+			"type": "vmware-vmx",
+			"source_path": "media/seed-{{user `version`}}/ClearLinux-{{user `version`}}.vmx",
+			"boot_wait": "20s",
+			"ssh_username": "root",
+			"ssh_password": "V@grant!",
+			"ssh_port": 22,
+			"ssh_wait_timeout": "3m",
+			"boot_command": [
+				"root<enter><wait>V@grant!<enter><wait>V@grant!<enter><wait>",
+				"swupd autoupdate --disable<enter>",
+				"mkdir -p /etc/ssh<enter>",
+				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
+				"swupd bundle-add openssh-server<enter>",
+				"systemctl start sshd.socket<enter>"
+			],
+			"shutdown_command": "sudo /usr/bin/poweroff -p",
+			"vm_name": "{{ user `name` }}",
+			"vmx_data": {
+				"cpuid.coresPerSocket": "1",
+				"memsize": "1024",
+				"numvcpus": "2"
+			}
+		}
+	],
+	"provisioners": [
+		{
+			"type": "shell",
+			"scripts": [
+				"scripts/01_ClearLinux_setup.sh",
+				"scripts/02_vagrant_user.sh",
+				"scripts/03_sshd.sh"
+			],
+			"pause_before": "5s"
+		}
+	],
+	"post-processors": [
+		[
+			{
+				"type": "vagrant",
+				"output": "boxes/{{user `name` }}-{{ user `version`}}.{{ .Provider }}.box",
+				"vagrantfile_template": "Vagrantfile"
+			},
+			{
+				"type": "vagrant-cloud",
+				"box_tag": "{{ user `box_tag`}}",
+				"access_token": "{{ user `cloud_token` }}",
+				"version": "{{user `version`}}",
+				"no_release": true,
+				"version_description": "#### **release notes** - https://download.clearlinux.org/releases/{{user `version`}}/clear/RELEASENOTES\n\nbuilt with **[ClearLinux-packer](https://github.com/AntonioMeireles/ClearLinux-packer)**.\n**[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)** is welcome!"
+			}
+		]
+	]
+}

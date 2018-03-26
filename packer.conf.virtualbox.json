@@ -73,30 +73,6 @@
 					"on"
 				]
 			]
-		},
-		{
-			"type": "vmware-vmx",
-			"source_path": "media/seed-{{user `version`}}/ClearLinux-{{user `version`}}.vmx",
-			"boot_wait": "20s",
-			"ssh_username": "root",
-			"ssh_password": "V@grant!",
-			"ssh_port": 22,
-			"ssh_wait_timeout": "3m",
-			"boot_command": [
-				"root<enter><wait>V@grant!<enter><wait>V@grant!<enter><wait>",
-				"swupd autoupdate --disable<enter>",
-				"mkdir -p /etc/ssh<enter>",
-				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
-				"swupd bundle-add openssh-server<enter>",
-				"systemctl start sshd.socket<enter>"
-			],
-			"shutdown_command": "sudo /usr/bin/poweroff -p",
-			"vm_name": "{{ user `name` }}",
-			"vmx_data": {
-				"cpuid.coresPerSocket": "1",
-				"memsize": "1024",
-				"numvcpus": "2"
-			}
 		}
 	],
 	"provisioners": [
