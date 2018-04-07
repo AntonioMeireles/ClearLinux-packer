@@ -17,7 +17,8 @@
 				"mkdir -p /etc/ssh<enter>",
 				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
 				"swupd bundle-add openssh-server<enter>",
-				"systemctl start sshd.socket<enter>"
+				"systemctl mask sshd.socket<enter>",
+				"systemctl enable sshd.service --now<enter>"
 			],
 			"shutdown_command": "sudo /usr/bin/poweroff -p",
 			"vm_name": "{{ user `name` }}",

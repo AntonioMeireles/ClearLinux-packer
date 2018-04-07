@@ -14,14 +14,3 @@ set -o xtrace
 	echo 'AuthorizedKeysFile %h/.ssh/authorized_keys'
 } > /etc/ssh/sshd_config
 
-mkdir -p /etc/systemd/system/sshd.socket.d
-{
-	echo '[Socket]'
-	echo 'ListenStream='
-	echo 'ListenStream=22'
-	echo 'Accept=yes'
-	echo 'FreeBind=true'
-} > /etc/systemd/system/sshd.socket.d/10-freebind.conf
-
-systemctl enable sshd.socket
-
