@@ -14,3 +14,5 @@ resize2fs /dev/sda3
 
 swupd bundle-add network-basic
 timedatectl set-ntp true
+
+systemctl mask tallow
