@@ -24,31 +24,29 @@ $(MEDIADIR)/$(VMDK):
 
 seed: $(MEDIADIR)/seed-$(VERSION)
 
-$(MEDIADIR)/seed-$(VERSION): $(MEDIADIR)/$(VMDK)
+$(MEDIADIR)/$(NV).ova: $(MEDIADIR)/$(VMDK)
 	@mkdir -p $(MEDIADIR)/seed-$(VERSION)
-	@for f in vmx vmxf vmsd plist; do                                           \
+	@for f in pv.vmx vmx vmxf vmsd plist; do                                           \
 		cp template/$(BOX_NAME).$$f.tmpl $(MEDIADIR)/seed-$(VERSION)/$(NV).$$f; done
 	@(cd $(MEDIADIR)/seed-$(VERSION); gsed -i "s,VERSION,$(VERSION)," $(BOX_NAME)-*)
-	@cp ./$(MEDIADIR)/$(VMDK) $(MEDIADIR)/seed-$(VERSION)/
+	@ln -sf ../$(VMDK) $(MEDIADIR)/seed-$(VERSION)/
 	@(cd $(MEDIADIR)/seed-$(VERSION);                                      \
-		gsed -i "s,VMDK_SIZE,$$(/usr/bin/stat -f"%z" $(VMDK))," $(BOX_NAME)-* )
+		gsed -i "s,VMDK_SIZE,$$(/usr/bin/stat -f"%z" ../$(VMDK))," $(BOX_NAME)-* )
 	@echo "vmware fusion VM (v$(VERSION)) syntetised from vmdk"
+	@ovftool $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx $(MEDIADIR)/$(NV).ova
+	@cp $(MEDIADIR)/seed-$(VERSION)/$(NV).pv.vmx $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx
 
 boxes: $(MEDIADIR)/$(NV).ova
 	@mkdir -p $(BOXDIR)
-	packer build  -force                              \
-		-var "name=$(BOX_NAME)"                          \
-		-var "version=$(VERSION)"                         \
+
+	packer build  -force                                \
+		-var "name=$(BOX_NAME)"                            \
+		-var "version=$(VERSION)"                           \
 		-var "box_tag=$(REPOSITORY)" packer.conf.vmware.json
-	packer build -force                                   \
-		-var "name=$(BOX_NAME)"                              \
-		-var "version=$(VERSION)"                             \
+	packer build -force                                     \
+		-var "name=$(BOX_NAME)"                                \
+		-var "version=$(VERSION)"                               \
 		-var "box_tag=$(REPOSITORY)" packer.conf.virtualbox.json
-
-$(MEDIADIR)/seed-$(VERSION)/$(NV).vmx: $(MEDIADIR)/seed-$(VERSION)
-
-$(MEDIADIR)/$(NV).ova: $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx
-	ovftool $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx $(MEDIADIR)/$(NV).ova
 
 release:
 	@curl --silent                                                                \
