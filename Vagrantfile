@@ -25,6 +25,9 @@ Vagrant.configure(2) do |config|
       vmware.whitelist_verified = true
       vmware.gui = false
       vmware.vmx['displayName'] = name.to_s
+      (0..8).each do |n|
+        vmware.vmx["ethernet#{n}.virtualDev"] = 'vmxnet3'
+      end
     end
   end
   config.vm.provider 'virtualbox' do |vbox|
