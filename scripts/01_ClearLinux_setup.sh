@@ -16,3 +16,6 @@ swupd bundle-add network-basic
 timedatectl set-ntp true
 
 systemctl mask tallow
+
+mkdir -p /etc/tmpfiles.d
+touch /etc/tmpfiles.d/clr-power-tweaks.conf
