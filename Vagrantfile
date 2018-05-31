@@ -2,7 +2,7 @@ ENV['LC_ALL'] = 'en_US.UTF-8'
 [
   {
     name: 'vagrant-guests-clearlinux',
-    version: '>= 1.0.7'
+    version: '>= 1.0.9'
   }
 ].each do |plugin|
   unless Vagrant.has_plugin?(plugin[:name],
