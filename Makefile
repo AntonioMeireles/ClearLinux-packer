@@ -13,7 +13,7 @@ MEDIADIR := media
 BOXDIR := boxes
 PWD := `pwd`
 
-.PHONY: clean-all clean-current all seed boxes addboxlocally release
+.PHONY: clean clean-current all seed boxes addboxlocally release
 
 $(MEDIADIR)/$(VMDK):
 	@mkdir -p $(MEDIADIR)
@@ -39,13 +39,13 @@ $(MEDIADIR)/$(NV).ova: $(MEDIADIR)/$(VMDK)
 boxes: $(MEDIADIR)/$(NV).ova
 	@mkdir -p $(BOXDIR)
 
-	packer build  -force                                \
-		-var "name=$(BOX_NAME)"                            \
-		-var "version=$(VERSION)"                           \
+	packer build  -force                                               \
+		-var "name=$(BOX_NAME)"                                           \
+		-var "version=$(VERSION)"                                          \
 		-var "box_tag=$(REPOSITORY)" packer.conf.vmware.json
-	packer build -force                                     \
-		-var "name=$(BOX_NAME)"                                \
-		-var "version=$(VERSION)"                               \
+	packer build -force                                                    \
+		-var "name=$(BOX_NAME)"                                               \
+		-var "version=$(VERSION)"                                              \
 		-var "box_tag=$(REPOSITORY)" packer.conf.virtualbox.json
 
 release:
@@ -60,7 +60,7 @@ addboxlocally: $(BOXDIR)/$(NV).vmware.box
 clean-current:
 	rm -rf $(MEDIADIR)/seed-$(VERSION) $(BOXDIR)/$(NV).vmware.box $(MEDIADIR)/$(NV).ova
 
-clean-all:
+clean:
 	rm -rf $(MEDIADIR)/* $(BOXDIR)/* packer_cache
 
 

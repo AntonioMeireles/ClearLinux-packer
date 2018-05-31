@@ -27,8 +27,10 @@ chmod 0440 "${SUDOERS}"
 
 mkdir -p "${DOT_SSH}"
 
-curl -o "${DOT_SSH}/vagrant" -sSL "${KEYS_URL}/vagrant"
-curl -o "${DOT_SSH}/vagrant.pub" -sSL "${KEYS_URL}/vagrant.pub"
+for f in vagrant{,.pub}
+do
+	curl -o "${DOT_SSH}/${f}" -sSL "${KEYS_URL}/${f}"
+done
 
 cat "${DOT_SSH}/vagrant.pub" >> "${DOT_SSH}/authorized_keys"
 
