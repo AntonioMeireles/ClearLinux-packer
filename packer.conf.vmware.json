@@ -12,6 +12,7 @@
 			"ssh_port": 22,
 			"ssh_wait_timeout": "3m",
 			"boot_command": [
+				"<wait5><leftAltOn><f2><leftAltOff><wait5>",
 				"root<enter><wait>V@grant!<enter><wait>V@grant!<enter><wait>",
 				"swupd autoupdate --disable<enter>",
 				"mkdir -p /etc/ssh<enter>",
