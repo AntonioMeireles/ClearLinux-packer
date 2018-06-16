@@ -19,7 +19,7 @@ $(MEDIADIR)/$(VMDK):
 	@mkdir -p $(MEDIADIR)
 	@echo "downloading v$(VERSION) base image..."
 	@curl -sSL $(SEED_URL) -o $(MEDIADIR)/$(VMDK).xz
-	@cd $(MEDIADIR) && unxz $(VMDK).xz && vmware-vdiskmanager -x 10Gb $(VMDK) && cd -
+	@cd $(MEDIADIR) && unxz $(VMDK).xz && vmware-vdiskmanager -x 40Gb $(VMDK) && cd -
 	@echo "v$(VERSION) base image unpacked..."
 
 seed: $(MEDIADIR)/seed-$(VERSION)
