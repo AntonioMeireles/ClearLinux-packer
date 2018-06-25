@@ -12,8 +12,8 @@ echo -e "F\n3\nYes\n${MAXSIZEMB}MB\n" | parted /dev/sda ---pretend-input-tty res
 partprobe /dev/sda
 resize2fs /dev/sda3
 
-swupd bundle-add network-basic
-timedatectl set-ntp true
+swupd bundle-add network-basic editors shells
+# timedatectl set-ntp true
 
 systemctl mask tallow
 
