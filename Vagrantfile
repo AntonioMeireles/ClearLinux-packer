@@ -14,6 +14,7 @@ end
 Vagrant.configure(2) do |config|
   name = 'clearlinux'
   config.vm.hostname = name.to_s
+  config.vm.define :name.to_s
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.box_check_update = false
   # always use Vagrants insecure key
@@ -24,7 +25,6 @@ Vagrant.configure(2) do |config|
     config.vm.provider(vmware_provider) do |vmware|
       vmware.whitelist_verified = true
       vmware.gui = false
-      vmware.vmx['displayName'] = name.to_s
       (0..8).each do |n|
         vmware.vmx["ethernet#{n}.virtualDev"] = 'vmxnet3'
       end
@@ -32,7 +32,6 @@ Vagrant.configure(2) do |config|
   end
   config.vm.provider 'virtualbox' do |vbox|
     vbox.gui = false
-    vbox.name = name.to_s
     vbox.linked_clone = true
   end
 end
