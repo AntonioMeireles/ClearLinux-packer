@@ -11,7 +11,7 @@
 			"ssh_password": "V@grant!",
 			"output_directory": "boxes",
 			"ssh_port": 22,
-			"ssh_wait_timeout": "3m",
+			"ssh_wait_timeout": "5m",
 			"vm_name": "{{ user `name` }}",
 			"guest_additions_mode": "disable",
 			"boot_command": [
@@ -21,6 +21,12 @@
 				"mkdir -p /etc/ssh<enter>",
 				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
 				"swupd bundle-add openssh-server<enter>",
+				"swupd bundle-add kernel-lts<enter>",
+				"swupd bundle-remove kernel-native<enter>",
+				"mount /dev/sda1 /boot<enter>",
+				"echo 'default '$(ls /boot/loader/entries/ | grep lts | sed -e 's/.conf$//') > /boot/loader/loader.conf<enter>",
+				"sudo rm -rfv /boot/*/*/*native*<enter>",
+				"umount /boot<enter>",
 				"systemctl mask sshd.socket<enter>",
 				"systemctl enable sshd.service --now<enter>"
 			],
