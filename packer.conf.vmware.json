@@ -10,7 +10,7 @@
 			"ssh_username": "root",
 			"ssh_password": "V@grant!",
 			"ssh_port": 22,
-			"ssh_wait_timeout": "3m",
+			"ssh_wait_timeout": "5m",
 			"boot_command": [
 				"<wait5><leftAltOn><f2><leftAltOff><wait5>",
 				"root<enter><wait>V@grant!<enter><wait>V@grant!<enter><wait>",
@@ -18,6 +18,8 @@
 				"mkdir -p /etc/ssh<enter>",
 				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
 				"swupd bundle-add openssh-server<enter>",
+				"swupd bundle-add os-cloudguest-vmware<enter>",
+				"systemctl enable open-vm-tools --now<enter>",
 				"systemctl mask sshd.socket<enter>",
 				"systemctl enable sshd.service --now<enter>"
 			],
