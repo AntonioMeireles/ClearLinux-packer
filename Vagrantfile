@@ -32,6 +32,6 @@ Vagrant.configure(2) do |config|
   end
   config.vm.provider 'virtualbox' do |vbox|
     vbox.gui = false
-    vbox.linked_clone = true
+    vbox.linked_clone = false
   end
 end
