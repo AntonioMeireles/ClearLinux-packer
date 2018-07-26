@@ -17,11 +17,10 @@
 				"swupd autoupdate --disable<enter>",
 				"mkdir -p /etc/ssh<enter>",
 				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
-				"swupd bundle-add openssh-server<enter>",
 				"swupd bundle-add os-cloudguest-vmware<enter>",
 				"systemctl enable open-vm-tools --now<enter>",
-				"systemctl mask sshd.socket<enter>",
-				"systemctl enable sshd.service --now<enter>"
+				"swupd bundle-add openssh-server<enter>",
+				"systemctl enable sshd.socket --now<enter>"
 			],
 			"shutdown_command": "sudo /usr/bin/poweroff -p",
 			"vm_name": "{{ user `name` }}",
