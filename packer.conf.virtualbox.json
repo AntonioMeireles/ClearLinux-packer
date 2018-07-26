@@ -30,7 +30,6 @@
 				"systemctl enable sshd.socket --now<enter>"
 			],
 			"shutdown_command": "sudo /usr/bin/poweroff -p",
-			"vm_name": "{{ user `name` }}",
 			"vboxmanage": [
 				[
 					"modifyvm",
