@@ -7,7 +7,7 @@ unless ['plugin'].include? ARGV[0]
   [
     {
       name: 'vagrant-guests-clearlinux',
-      version: '>= 1.0.10'
+      version: '>= 1.0.12'
     }
   ].each do |plugin|
     unless Vagrant.has_plugin?(plugin[:name], plugin[:version])
