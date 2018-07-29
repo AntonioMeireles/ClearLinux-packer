@@ -33,7 +33,7 @@ Vagrant.configure(2) do |config|
     config.vm.provider(vmware_provider) do |vmware|
       vmware.whitelist_verified = true
       vmware.gui = false
-      (0..8).each do |n|
+      (0..7).each do |n|
         vmware.vmx["ethernet#{n}.virtualDev"] = 'vmxnet3'
       end
     end
@@ -41,5 +41,9 @@ Vagrant.configure(2) do |config|
   config.vm.provider 'virtualbox' do |vbox|
     vbox.gui = false
     vbox.linked_clone = false
+    vbox.customize ['modifyvm', :id, '--audio', 'none']
+    (1..8).each do |n|
+      vbox.customize ['modifyvm', :id, "--nictype#{n}", 'virtio']
+    end
   end
 end
