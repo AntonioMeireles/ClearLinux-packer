@@ -97,6 +97,7 @@
 			{
 				"type": "vagrant",
 				"output": "boxes/{{user `name` }}-{{ user `version`}}.{{ .Provider }}.box",
+				"compression_level": 9,
 				"vagrantfile_template": "Vagrantfile"
 			},
 			{
