@@ -19,3 +19,11 @@ systemctl mask tallow
 
 mkdir -p /etc/tmpfiles.d
 touch /etc/tmpfiles.d/clr-power-tweaks.conf
+
+mkdir -p /etc/systemd/network/80-dhcp.network.d
+{
+	echo "[DHCP]"
+	echo "SendHostname=false"
+	echo "ClientIdentifier=mac"
+ } > /etc/systemd/network/80-dhcp.network.d/1stBootFix.conf
+
