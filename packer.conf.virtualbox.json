@@ -20,12 +20,6 @@
 				"swupd autoupdate --disable<enter>",
 				"mkdir -p /etc/ssh<enter>",
 				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
-				"swupd bundle-add kernel-lts<enter>",
-				"swupd bundle-remove kernel-native<enter>",
-				"mount /dev/sda1 /boot<enter>",
-				"echo 'default '$(ls /boot/loader/entries/ | grep lts | sed -e 's/.conf$//') > /boot/loader/loader.conf<enter>",
-				"rm -rfv /boot/*/*/*native*<enter>",
-				"umount /boot<enter>",
 				"swupd bundle-add openssh-server<enter>",
 				"systemctl enable sshd.socket --now<enter>"
 			],
@@ -87,7 +81,8 @@
 			"scripts": [
 				"scripts/01_ClearLinux_setup.sh",
 				"scripts/02_vagrant_user.sh",
-				"scripts/03_sshd.sh"
+				"scripts/03_sshd.sh",
+				"scripts/99_hypervisor-specific.sh"
 			],
 			"pause_before": "5s"
 		}

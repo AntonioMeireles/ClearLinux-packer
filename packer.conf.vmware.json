@@ -9,6 +9,7 @@
 			"boot_wait": "20s",
 			"ssh_username": "root",
 			"ssh_password": "V@grant!",
+			"output_directory": "boxes",
 			"ssh_port": 22,
 			"ssh_wait_timeout": "5m",
 			"boot_command": [
@@ -17,8 +18,6 @@
 				"swupd autoupdate --disable<enter>",
 				"mkdir -p /etc/ssh<enter>",
 				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
-				"swupd bundle-add os-cloudguest-vmware<enter>",
-				"systemctl enable open-vm-tools --now<enter>",
 				"swupd bundle-add openssh-server<enter>",
 				"systemctl enable sshd.socket --now<enter>"
 			],
@@ -37,7 +36,8 @@
 			"scripts": [
 				"scripts/01_ClearLinux_setup.sh",
 				"scripts/02_vagrant_user.sh",
-				"scripts/03_sshd.sh"
+				"scripts/03_sshd.sh",
+				"scripts/99_hypervisor-specific.sh"
 			],
 			"pause_before": "5s"
 		}
