@@ -1,21 +1,23 @@
 # [Clear Linux](https://clearlinux.org) guest boxes for [Vagrant](http://www.vagrantup.com/)
 
-NOTE: This is work in progress. Feedback is welcome.
+#### This is work in progress, [feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues) is welcome.
 
 ## Pre-requisites
 
-You need to have the `vagrant-guests-clearlinux` plugin installed:
+- You'll need to have installed the (latest) [`vagrant-guests-clearlinux`](https://github.com/AntonioMeireles/vagrant-guests-clearlinux) plugin release:
 
-```bash
-vagrant plugin install vagrant-guests-clearlinux
-```
+  ```bash
+  vagrant plugin install vagrant-guests-clearlinux
+  ```
+
+- currently supported are the [VirtualBox](https://www.vagrantup.com/docs/virtualbox/) and [VMware](https://www.vagrantup.com/docs/vmware/) providers.
 
 ## Quickstart
 
 In an empty directory:
 
 ```bash
-vagrant init AntonioMeireles/ClearLinux --box-version 22880
+vagrant init AntonioMeireles/ClearLinux
 vagrant up
 ```
 
