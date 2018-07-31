@@ -27,3 +27,10 @@ mkdir -p /etc/systemd/network/80-dhcp.network.d
 	echo "ClientIdentifier=mac"
  } > /etc/systemd/network/80-dhcp.network.d/1stBootFix.conf
 
+{
+	echo "[Match]"
+	echo "Driver=virtio_net vmxnet3"
+	echo "[Link]"
+	echo "NamePolicy=path"
+} > /etc/systemd/network/10-systemd-net-quirks.link
+
