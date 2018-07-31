@@ -23,3 +23,5 @@ case "${HYPERVISOR}" in
 		umount /boot
 	;;
 esac
+
+swupd clean
