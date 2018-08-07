@@ -37,7 +37,8 @@
 				"scripts/01_ClearLinux_setup.sh",
 				"scripts/02_vagrant_user.sh",
 				"scripts/03_sshd.sh",
-				"scripts/99_hypervisor-specific.sh"
+				"scripts/98_hypervisor-specific.sh",
+				"scripts/99_trim.sh"
 			],
 			"pause_before": "5s"
 		}

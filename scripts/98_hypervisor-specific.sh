@@ -5,7 +5,7 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-export HYPERVISOR="$(systemd-detect-virt -v)"
+HYPERVISOR="$(systemd-detect-virt -v)"
 
 case "${HYPERVISOR}" in
 	'vmware')
@@ -23,5 +23,3 @@ case "${HYPERVISOR}" in
 		umount /boot
 	;;
 esac
-
-swupd clean
