@@ -11,7 +11,9 @@ unless ['plugin'].include? ARGV[0]
     }
   ].each do |plugin|
     unless Vagrant.has_plugin?(plugin[:name], plugin[:version])
-      system("vagrant plugin install #{plugin[:name]}", chdir: '/tmp') || exit!
+      verb = 'install'
+      verb = 'update' if Vagrant.has_plugin?(plugin[:name])
+      system("vagrant plugin #{verb} #{plugin[:name]}", chdir: '/tmp') || exit!
       need_restart = true
     end
   end
