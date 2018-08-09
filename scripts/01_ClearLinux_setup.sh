@@ -15,8 +15,6 @@ resize2fs /dev/sda3
 swupd bundle-add network-basic vim shells containers-basic
 systemctl enable docker
 
-# timedatectl set-ntp true
-
 systemctl mask tallow
 
 mkdir -p /etc/tmpfiles.d
