@@ -8,7 +8,7 @@ set -o xtrace
 swupd bundle-add sysadmin-basic storage-utils
 
 MAXSIZEMB=$(printf %s\\n 'unit MB print list' | parted | grep "Disk /dev/sda" | cut -d' ' -f3 | tr -d MB)
-echo -e "F\n3\nYes\n${MAXSIZEMB}MB\n" | parted /dev/sda ---pretend-input-tty resizepart
+echo -e "F\\n3\\n${MAXSIZEMB}MB\\n" | parted /dev/sda ---pretend-input-tty resizepart
 partprobe /dev/sda
 resize2fs /dev/sda3
 
