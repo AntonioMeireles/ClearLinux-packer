@@ -58,7 +58,7 @@
 				"version": "{{user `version`}}",
 				"no_release": true,
 				"keep_input_artifact": true,
-				"version_description": "#### **release notes**\n\n - https://download.clearlinux.org/releases/{{user `version`}}/clear/RELEASENOTES\n\nbuilt with **[ClearLinux-packer](https://github.com/AntonioMeireles/ClearLinux-packer)**.\n\n**[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)** is welcome!"
+				"version_description": "---\n\n#### **release notes** - https://download.clearlinux.org/releases/{{user `version`}}/clear/RELEASENOTES\n\n---\n\nbuilt with **[ClearLinux-packer](https://github.com/AntonioMeireles/ClearLinux-packer)** - **[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)** is welcome!"
 			}
 		]
 	]

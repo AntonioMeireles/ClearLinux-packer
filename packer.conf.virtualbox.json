@@ -25,53 +25,15 @@
 			],
 			"shutdown_command": "sudo /usr/bin/poweroff -p",
 			"vboxmanage": [
-				[
-					"modifyvm",
-					"{{.Name}}",
-					"--memory",
-					"1024"
-				], [
-					"modifyvm",
-					"{{.Name}}",
-					"--ostype",
-					"Linux26_64"
-				], [
-					"modifyvm",
-					"{{.Name}}",
-					"--cpus",
-					"2"
-				], [
-					"modifyvm",
-					"{{.Name}}",
-					"--chipset",
-					"ich9"
-				], [
-					"modifyvm",
-					"{{.Name}}",
-					"--firmware",
-					"efi"
-				], [
-					"modifyvm",
-					"{{.Name}}",
-					"--paravirtprovider",
-					"kvm"
-				], [
-					"modifyvm",
-					"{{.Name}}",
-					"--rtcuseutc",
-					"on"
-				], [
-					"modifyvm",
-					"{{.Name}}",
-					"--boot1",
-					"disk"
-				],
-				[
-					"modifyvm",
-					"{{.Name}}",
-					"--longmode",
-					"on"
-				]
+				[ "modifyvm", "{{.Name}}", "--memory", "1024" ],
+				[ "modifyvm", "{{.Name}}", "--ostype", "Linux26_64" ],
+				[ "modifyvm", "{{.Name}}", "--cpus", "2" ],
+				[ "modifyvm", "{{.Name}}", "--chipset", "ich9" ],
+				[ "modifyvm", "{{.Name}}", "--firmware", "efi" ],
+				[ "modifyvm", "{{.Name}}", "--paravirtprovider", "kvm" ],
+				[ "modifyvm", "{{.Name}}", "--rtcuseutc", "on" ],
+				[ "modifyvm", "{{.Name}}", "--boot1", "disk" ],
+				[ "modifyvm", "{{.Name}}", "--longmode", "on" ]
 			]
 		}
 	],
@@ -103,7 +65,7 @@
 				"version": "{{user `version`}}",
 				"no_release": true,
 				"keep_input_artifact": true,
-				"version_description": "#### **release notes**\n\n - https://download.clearlinux.org/releases/{{user `version`}}/clear/RELEASENOTES\n\nbuilt with **[ClearLinux-packer](https://github.com/AntonioMeireles/ClearLinux-packer)**.\n\n**[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)** is welcome!"
+				"version_description": "---\n\n#### **release notes** - https://download.clearlinux.org/releases/{{user `version`}}/clear/RELEASENOTES\n\n---\n\nbuilt with **[ClearLinux-packer](https://github.com/AntonioMeireles/ClearLinux-packer)** - **[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)** is welcome!"
 			}
 		]
 	]
