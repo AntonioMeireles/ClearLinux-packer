@@ -12,7 +12,7 @@ echo -e "F\\n3\\n${MAXSIZEMB}MB\\n" | parted /dev/sda ---pretend-input-tty resiz
 partprobe /dev/sda
 resize2fs /dev/sda3
 
-swupd bundle-add network-basic vim shells containers-basic
+swupd bundle-add network-basic vim shells containers-basic patch diffutils
 systemctl enable docker
 
 systemctl mask tallow
