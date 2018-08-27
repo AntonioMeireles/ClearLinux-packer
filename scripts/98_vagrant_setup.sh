@@ -14,7 +14,7 @@ export SUDOERS="/etc/sudoers.d/vagrant"
 
 useradd --create-home --user-group --password ${VAGRANT_PASSWORD} "${VAGRANT_USER}"
 
-mkdir -p "$(dirname ${SUDOERS})"
+mkdir -p -m 0440  "$(dirname ${SUDOERS})"
 
 {
 	echo "Defaults:${VAGRANT_USER} !requiretty"
@@ -23,9 +23,7 @@ mkdir -p "$(dirname ${SUDOERS})"
 	echo "${VAGRANT_USER} ALL=(ALL) NOPASSWD: ALL"
 } >> "${SUDOERS}"
 
-chmod 0440 "${SUDOERS}"
-
-mkdir -p "${DOT_SSH}"
+mkdir -p -m 0700 "${DOT_SSH}"
 
 for f in vagrant{,.pub}
 do
@@ -35,7 +33,36 @@ done
 cat "${DOT_SSH}/vagrant.pub" >> "${DOT_SSH}/authorized_keys"
 
 chown -R "${VAGRANT_USER}":"${VAGRANT_USER}" "${DOT_SSH}"
-chmod 0700 "${DOT_SSH}"
 chmod 0640 "${DOT_SSH}/authorized_keys" "${DOT_SSH}/vagrant.pub"
 chmod 0600 "${DOT_SSH}/vagrant"
+
+{
+	echo 'UseDNS no'
+	echo 'PubkeyAuthentication yes'
+	echo 'PermitEmptyPasswords no'
+	echo 'PasswordAuthentication no'
+	echo 'PermitRootLogin no'
+	echo 'AuthorizedKeysFile %h/.ssh/authorized_keys'
+	echo 'Ciphers +aes128-cbc'
+} > /etc/ssh/sshd_config
+chmod 0600 /etc/ssh/sshd_config
+
+mkdir -p /etc/tmpfiles.d
+touch /etc/tmpfiles.d/clr-power-tweaks.conf
+
+mkdir -p /etc/systemd/network/80-dhcp.network.d
+{
+	echo "[DHCP]"
+	echo "SendHostname=false"
+	echo "ClientIdentifier=mac"
+ } > /etc/systemd/network/80-dhcp.network.d/1stBootFix.conf
+
+{
+	echo "[Match]"
+	echo "Driver=virtio_net vmxnet3"
+	echo "[Link]"
+	echo "NamePolicy=path"
+} > /etc/systemd/network/10-systemd-net-quirks.link
+
+
 

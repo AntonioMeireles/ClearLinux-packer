@@ -21,6 +21,7 @@
 				"mkdir -p /etc/ssh<enter>",
 				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
 				"swupd bundle-add openssh-server<enter>",
+				"systemctl mask tallow --now<enter>",
 				"systemctl enable sshd.socket --now<enter>"
 			],
 			"shutdown_command": "sudo /usr/bin/poweroff -p",
@@ -41,10 +42,27 @@
 		{
 			"type": "shell",
 			"scripts": [
-				"scripts/01_ClearLinux_setup.sh",
-				"scripts/02_vagrant_user.sh",
-				"scripts/03_sshd.sh",
-				"scripts/98_hypervisor-specific.sh",
+				"scripts/01_resize_root_volume.sh",
+				"scripts/02_add_common_bundles.sh",
+				"scripts/97_hypervisor-specific.sh"
+			],
+			"pause_before": "5s"
+		}, {
+			"type": "shell",
+			"expect_disconnect": true,
+			"inline": [
+				"sudo reboot"
+			]
+		}, {
+			"type": "shell",
+			"pause_before": "25s",
+			"inline": [
+				"uptime"
+			]
+		}, {
+			"type": "shell",
+			"scripts": [
+				"scripts/98_vagrant_setup.sh",
 				"scripts/99_trim.sh"
 			],
 			"pause_before": "5s"
