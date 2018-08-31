@@ -14,7 +14,7 @@ export SUDOERS="/etc/sudoers.d/vagrant"
 
 useradd --create-home --user-group --password ${VAGRANT_PASSWORD} "${VAGRANT_USER}"
 
-mkdir -p -m 0440  "$(dirname ${SUDOERS})"
+mkdir -p "$(dirname ${SUDOERS})"
 
 {
 	echo "Defaults:${VAGRANT_USER} !requiretty"
@@ -22,6 +22,8 @@ mkdir -p -m 0440  "$(dirname ${SUDOERS})"
 	echo 'Defaults env_keep += "SSH_AUTH_SOCK"'
 	echo "${VAGRANT_USER} ALL=(ALL) NOPASSWD: ALL"
 } >> "${SUDOERS}"
+
+chmod -R 0550 "${SUDOERS}"
 
 mkdir -p -m 0700 "${DOT_SSH}"
 
