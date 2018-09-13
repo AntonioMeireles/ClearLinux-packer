@@ -5,6 +5,8 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
+clr-boot-manager update
+
 swupd clean
 
 echo '- Zeroing out empty space for better compressability'
