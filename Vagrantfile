@@ -35,6 +35,8 @@ Vagrant.configure(2) do |config|
     config.vm.provider(vmware_provider) do |vmware|
       vmware.whitelist_verified = true
       vmware.gui = false
+      # FIXME only way to behave past 24950 ...
+      vmware.ssh_info_public = true
       (0..7).each do |n|
         vmware.vmx["ethernet#{n}.virtualDev"] = 'vmxnet3'
       end
