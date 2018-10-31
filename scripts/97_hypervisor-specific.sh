@@ -23,6 +23,7 @@ echo "defaulting to LTS kernel"
 swupd bundle-add kernel-lts
 swupd bundle-remove kernel-native
 systemctl start boot.mount
-echo 'default '$(ls /boot/loader/entries/ | grep lts | sed -e 's/.conf$//') > /boot/loader/loader.conf
+krnl="$(ls /boot/loader/entries/ | grep lts | sed -e 's/.conf$//')"
+echo "default ${krnl}" > /boot/loader/loader.conf
 rm -rfv /boot/*/*/*native*
 systemctl stop boot.mount
