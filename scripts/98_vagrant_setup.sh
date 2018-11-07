@@ -54,6 +54,7 @@ touch /etc/tmpfiles.d/clr-power-tweaks.conf
 mkdir -p /etc/systemd/network/80-dhcp.network.d
 {
 	echo "[DHCP]"
+	echo "DHCP=ipv4"
 	echo "SendHostname=false"
 	echo "ClientIdentifier=mac"
  } > /etc/systemd/network/80-dhcp.network.d/1stBootFix.conf
@@ -65,5 +66,10 @@ mkdir -p /etc/systemd/network/80-dhcp.network.d
 	echo "NamePolicy=path"
 } > /etc/systemd/network/10-systemd-net-quirks.link
 
-
-
+# workaround https://github.com/systemd/systemd/issues/9682 at all costs
+# seems to be a thing with systemd-239 :/
+mkdir -p  /etc/systemd/system/systemd-udevd.service.d/
+{
+	echo "[Service]"
+	echo "ExecStartPost=/usr/bin/sleep 5"
+} > /etc/systemd/system/systemd-udevd.service.d/fix-iface-rename.conf
