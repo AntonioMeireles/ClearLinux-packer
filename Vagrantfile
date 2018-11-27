@@ -5,7 +5,7 @@ Vagrant.require_version '>= 2.1.5'
 
 name = 'clearlinux'
 required_plugins = {
-  'vagrant-guests-clearlinux' => { 'version' => '>= 1.0.13' }
+  'vagrant-guests-clearlinux' => { 'version' => '>= 1.0.14' }
 }
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
