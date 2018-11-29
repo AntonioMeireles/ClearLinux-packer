@@ -57,7 +57,7 @@ mkdir -p /etc/systemd/network/80-dhcp.network.d
 	echo "DHCP=ipv4"
 	echo "SendHostname=false"
 	echo "ClientIdentifier=mac"
- } > /etc/systemd/network/80-dhcp.network.d/1stBootFix.conf
+} > /etc/systemd/network/80-dhcp.network.d/1stBootFix.conf
 
 {
 	echo "[Match]"
@@ -73,3 +73,9 @@ mkdir -p  /etc/systemd/system/systemd-udevd.service.d/
 	echo "[Service]"
 	echo "ExecStartPost=/usr/bin/sleep 5"
 } > /etc/systemd/system/systemd-udevd.service.d/fix-iface-rename.conf
+
+clr-boot-manager update
+
+swupd clean
+
+sync

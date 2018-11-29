@@ -4,9 +4,26 @@
 	},
 	"builders": [
 		{
-			"type": "vmware-vmx",
-			"source_path": "media/seed-{{user `version`}}/ClearLinux-{{user `version`}}.vmx",
-			"boot_wait": "20s",
+			"type": "qemu",
+			"use_default_display": true,
+			"headless": false,
+			"qemuargs": [
+				[
+					"-m",
+					"2048M"
+				], [
+					"-global",
+					"virtio-pci.disable-modern=on"
+				], [
+					"--bios",
+					"media/OVMF.fd"
+				]
+			],
+			"iso_url": "media/clear-{{user `version`}}-kvm.img",
+			"iso_checksum": "{{user `kvm_checksum`}}",
+			"iso_checksum_type": "md5",
+			"disk_image": true,
+			"boot_wait": "30s",
 			"ssh_username": "root",
 			"ssh_password": "V@grant!",
 			"output_directory": "boxes",
@@ -24,11 +41,12 @@
 				"systemctl enable sshd.socket --now<enter>"
 			],
 			"shutdown_command": "sudo /usr/bin/poweroff -p",
-			"vmx_data": {
-				"cpuid.coresPerSocket": "1",
-				"memsize": "1024",
-				"numvcpus": "2"
-			}
+			"format": "qcow2",
+			"accelerator": "hvf",
+			"disk_size": 40000,
+			"net_device": "virtio-net",
+			"disk_interface": "virtio",
+			"skip_compaction": true
 		}
 	],
 	"provisioners": [
@@ -40,13 +58,6 @@
 				"scripts/97_hypervisor-specific.sh"
 			],
 			"pause_before": "5s"
-		}, {
-			"type": "shell",
-			"expect_disconnect": true,
-			"start_retry_timeout": "600s",
-			"scripts": [
-				"scripts/90_reboot.sh"
-			]
 		}, {
 			"type": "shell",
 			"scripts": [

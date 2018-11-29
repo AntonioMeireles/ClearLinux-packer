@@ -4,7 +4,9 @@
 
 ## Pre-requisites
 
-- currently supported are the **[VirtualBox](https://www.vagrantup.com/docs/virtualbox/)** and **[VMware](https://www.vagrantup.com/docs/vmware/)** providers.
+- currently supported are the **[VirtualBox](https://www.vagrantup.com/docs/virtualbox/)**, **[VMware](https://www.vagrantup.com/docs/vmware/)** and, up from **26510**, **[libvirt](https://github.com/vagrant-libvirt/vagrant-libvirt)**
+providers.
+
 - You'll need to have installed the (latest) [`vagrant-guests-clearlinux`](https://github.com/AntonioMeireles/vagrant-guests-clearlinux) plugin release:
 
   ```bash
@@ -20,14 +22,20 @@ vagrant init AntonioMeireles/ClearLinux
 vagrant up
 ```
 
+> if you happen to be running multiple providers in same box just specify which
+> one you want to actually use when invoking `vagrant`...
+> ```bash
+> vagrant up --provider (virtualbox|vmware|libvirt)
+> ```
+
 ## Vagrant Cloud
 
 This project Vagrant boxes are hosted on **Vagrant Cloud** at **[AntonioMeireles/Clearlinux](https://app.vagrantup.com/AntonioMeireles/boxes/ClearLinux)**
 
 ## What else do you need to know ?
 
-- Both the **VirtualBox** and **VMware** boxes use paravirtualized drivers by default, on networking and i/o, for optimal performance. graphical/desktop performance optimization wasn't a concern at all (sound is disabled, etc) ence the boxes are optimized for headless use. if you happen to have a desktop oriented use case just [bug](https://github.com/AntonioMeireles/ClearLinux-packer/issues) the author.
-- If you plan to use nested virtualization (say kvm, etc) then the **VMware** box is your only option, as the VirtualBox hypervisor currently does not support that functionality.
+- *All** boxes use para-virtualized drivers by default, on networking and i/o, for optimal performance. graphical/desktop performance optimization wasn't a concern at all (sound is disabled, etc) ence the boxes are optimized for headless use. if you happen to have a desktop oriented use case just [bug](https://github.com/AntonioMeireles/ClearLinux-packer/issues) the author.
+- If you plan to use nested virtualization (say kvm, etc) then, currently, the **VMware** and **libvirt** boxes are your only options, as currently the VirtualBox hypervisor does not support that functionality.
 
 ## release schedule
 

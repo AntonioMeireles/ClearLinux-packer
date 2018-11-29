@@ -1,6 +1,7 @@
 ENV['LC_ALL'] = 'en_US.UTF-8'
 
 VAGRANTFILE_API_VERSION = '2'.freeze
+UEFI = File.join(File.dirname(__FILE__), 'OVMF.fd').freeze
 Vagrant.require_version '>= 2.1.5'
 
 name = 'clearlinux'
@@ -36,5 +37,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     (1..8).each do |n|
       vbox.customize ['modifyvm', :id, "--nictype#{n}", 'virtio']
     end
+  end
+  config.vm.provider 'libvirt' do |libvirt|
+    unless File.exist?(UEFI)
+      system("curl https://download.clearlinux.org/image/OVMF.fd -o #{UEFI}")
+    end
+    libvirt.loader = UEFI
+    libvirt.driver = 'kvm'
+    libvirt.cpu_mode = 'host-passthrough'
+    libvirt.nested = true
   end
 end

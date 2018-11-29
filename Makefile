@@ -4,22 +4,37 @@ REPOSITORY := $(OWNER)/$(BOX_NAME)
 
 VERSION ?= $(shell curl -Ls https://download.clearlinux.org/latest)
 BUILD_ID ?= $(shell date -u '+%Y-%m-%d-%H%M')
-
-VMDK := clear-$(VERSION)-vmware.vmdk
 NV := $(BOX_NAME)-$(VERSION)
-SEED_URL := https://download.clearlinux.org/releases/$(VERSION)/clear/$(VMDK).xz
 
+SEED_PREFIX = clear-$(VERSION)
+VMDK := $(SEED_PREFIX)-vmware.vmdk
+LIBVIRT := $(SEED_PREFIX)-kvm.img
+
+VMDK_SEED_URL := https://download.clearlinux.org/releases/$(VERSION)/clear/$(VMDK).xz
+LIBVIRT_SEED_URL := https://download.clearlinux.org/releases/$(VERSION)/clear/$(LIBVIRT).xz
 MEDIADIR := media
 BOXDIR := boxes
 PWD := `pwd`
 
 .PHONY: clean clean-current all seed boxes addboxlocally release
 
+$(MEDIADIR)/OVMF.fd:
+	@mkdir -p $(MEDIADIR)
+	@curl -sSL https://download.clearlinux.org/image/OVMF.fd -o $(MEDIADIR)/OVMF.fd
+	@ln -sf $(MEDIADIR)/OVMF.fd $(MEDIADIR)/bios.bin
+
 $(MEDIADIR)/$(VMDK):
 	@mkdir -p $(MEDIADIR)
-	@echo "downloading v$(VERSION) base image..."
-	@curl -sSL $(SEED_URL) -o $(MEDIADIR)/$(VMDK).xz
+	@echo "downloading v$(VERSION) base image [VMDK]..."
+	@curl -sSL $(VMDK_SEED_URL) -o $(MEDIADIR)/$(VMDK).xz
 	@cd $(MEDIADIR) && unxz $(VMDK).xz && vmware-vdiskmanager -x 40Gb $(VMDK) && cd -
+	@echo "v$(VERSION) base image unpacked..."
+
+$(MEDIADIR)/$(LIBVIRT):
+	@mkdir -p $(MEDIADIR)
+	@echo "downloading v$(VERSION) base image [KVM/libvirt]..."
+	@curl -sSL $(LIBVIRT_SEED_URL) -o $(MEDIADIR)/$(LIBVIRT).xz
+	@cd $(MEDIADIR) && unxz $(LIBVIRT).xz && cd -
 	@echo "v$(VERSION) base image unpacked..."
 
 seed: $(MEDIADIR)/seed-$(VERSION)
@@ -36,9 +51,17 @@ $(MEDIADIR)/$(NV).ova: $(MEDIADIR)/$(VMDK)
 	@ovftool $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx $(MEDIADIR)/$(NV).ova
 	@cp $(MEDIADIR)/seed-$(VERSION)/$(NV).pv.vmx $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx
 
-boxes: $(MEDIADIR)/$(NV).ova
+libvirt.box: $(MEDIADIR)/$(LIBVIRT) $(MEDIADIR)/OVMF.fd
 	@mkdir -p $(BOXDIR)
 
+	packer build  -force                                                         \
+		-var "name=$(BOX_NAME)"                                                     \
+		-var "version=$(VERSION)"                                                    \
+		-var "kvm_checksum=$(shell md5sum $(MEDIADIR)/$(LIBVIRT) | sed -e 's, .*,,')" \
+		-var "box_tag=$(REPOSITORY)" packer.conf.libvirt.json
+
+boxes: $(MEDIADIR)/$(NV).ova
+	@mkdir -p $(BOXDIR)
 	packer build  -force                                               \
 		-var "name=$(BOX_NAME)"                                           \
 		-var "version=$(VERSION)"                                          \
