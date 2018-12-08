@@ -46,5 +46,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     libvirt.driver = 'kvm'
     libvirt.cpu_mode = 'host-passthrough'
     libvirt.nested = true
+    libvirt.memory = 2048
+    libvirt.cpus = 2
   end
 end

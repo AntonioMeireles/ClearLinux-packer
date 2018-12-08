@@ -12,6 +12,9 @@
 					"-m",
 					"2048M"
 				], [
+					"-smp",
+					"2"
+				], [
 					"-global",
 					"virtio-pci.disable-modern=on"
 				], [

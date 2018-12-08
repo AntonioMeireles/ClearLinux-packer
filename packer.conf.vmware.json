@@ -26,7 +26,7 @@
 			"shutdown_command": "sudo /usr/bin/poweroff -p",
 			"vmx_data": {
 				"cpuid.coresPerSocket": "1",
-				"memsize": "1024",
+				"memsize": "2048",
 				"numvcpus": "2"
 			}
 		}

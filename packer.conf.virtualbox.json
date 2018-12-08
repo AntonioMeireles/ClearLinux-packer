@@ -26,7 +26,7 @@
 			],
 			"shutdown_command": "sudo /usr/bin/poweroff -p",
 			"vboxmanage": [
-				[ "modifyvm", "{{.Name}}", "--memory", "1024" ],
+				[ "modifyvm", "{{.Name}}", "--memory", "2048" ],
 				[ "modifyvm", "{{.Name}}", "--ostype", "Linux26_64" ],
 				[ "modifyvm", "{{.Name}}", "--cpus", "2" ],
 				[ "modifyvm", "{{.Name}}", "--chipset", "ich9" ],
