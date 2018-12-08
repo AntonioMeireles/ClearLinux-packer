@@ -48,8 +48,7 @@
 			"accelerator": "hvf",
 			"disk_size": 40000,
 			"net_device": "virtio-net",
-			"disk_interface": "virtio",
-			"skip_compaction": true
+			"disk_interface": "virtio-scsi"
 		}
 	],
 	"provisioners": [

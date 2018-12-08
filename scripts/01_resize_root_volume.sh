@@ -7,14 +7,7 @@ set -o xtrace
 
 swupd bundle-add storage-utils
 
-case "${PACKER_BUILDER_TYPE}" in
-  qemu)
-    ROOT_DEVICE=/dev/vda
-  ;;
-  *)
-    ROOT_DEVICE=/dev/sda
-  ;;
-esac
+ROOT_DEVICE=/dev/sda
 
 MAXSIZEMB=$(printf %s\\n 'unit MB print list' | parted | grep "Disk ${ROOT_DEVICE}" | cut -d' ' -f3 | tr -d MB)
 echo -e "F\\n3\\n${MAXSIZEMB}MB\\n" | parted "${ROOT_DEVICE}" ---pretend-input-tty resizepart
