@@ -31,7 +31,7 @@
 			"ssh_wait_timeout": "5m",
 			"vm_name": "{{ user `name` }}",
 			"boot_command": [
-				"<wait5><leftAltOn><f2><leftAltOff><wait5>",
+				"<wait5><wait5>",
 				"root<enter><wait>V@grant!<enter><wait>V@grant!<enter><wait>",
 				"swupd autoupdate --disable<enter>",
 				"mkdir -p /etc/ssh<enter>",
