@@ -34,7 +34,8 @@
 				[ "modifyvm", "{{.Name}}", "--paravirtprovider", "kvm" ],
 				[ "modifyvm", "{{.Name}}", "--rtcuseutc", "on" ],
 				[ "modifyvm", "{{.Name}}", "--boot1", "disk" ],
-				[ "modifyvm", "{{.Name}}", "--longmode", "on" ]
+				[ "modifyvm", "{{.Name}}", "--longmode", "on" ],
+				[ "modifyvm", "{{.Name}}", "--audio", "none" ]
 			]
 		}
 	],
