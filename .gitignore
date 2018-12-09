@@ -4,3 +4,4 @@ output-vmware-vmx/
 .vscode
 .vagrant
 packer_cache
+tests
