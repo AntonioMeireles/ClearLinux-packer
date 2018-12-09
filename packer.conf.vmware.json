@@ -37,6 +37,7 @@
 			"scripts": [
 				"scripts/01_resize_root_volume.sh",
 				"scripts/02_add_common_bundles.sh",
+				"scripts/96_hooks.sh",
 				"scripts/97_hypervisor-specific.sh"
 			],
 			"pause_before": "5s"
