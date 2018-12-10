@@ -48,6 +48,9 @@
 			"accelerator": "hvf",
 			"disk_size": 40000,
 			"net_device": "virtio-net",
+			"disk_discard": "unmap",
+			"disk_detect_zeroes": "unmap",
+			"disk_compression": true,
 			"disk_interface": "virtio-scsi"
 		}
 	],
