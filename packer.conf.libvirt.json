@@ -23,8 +23,7 @@
 				]
 			],
 			"iso_url": "media/clear-{{user `version`}}-kvm.img",
-			"iso_checksum": "{{user `kvm_checksum`}}",
-			"iso_checksum_type": "md5",
+			"iso_checksum_type": "none",
 			"disk_image": true,
 			"boot_wait": "30s",
 			"ssh_username": "root",

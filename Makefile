@@ -54,10 +54,9 @@ $(MEDIADIR)/$(NV).ova: $(MEDIADIR)/$(VMDK)
 libvirt.box: $(MEDIADIR)/$(LIBVIRT) $(MEDIADIR)/OVMF.fd
 	@mkdir -p $(BOXDIR)
 
-	packer build  -force                                                         \
-		-var "name=$(BOX_NAME)"                                                     \
-		-var "version=$(VERSION)"                                                    \
-		-var "kvm_checksum=$(shell md5sum $(MEDIADIR)/$(LIBVIRT) | sed -e 's, .*,,')" \
+	packer build  -force                                       \
+		-var "name=$(BOX_NAME)"                                   \
+		-var "version=$(VERSION)"                                  \
 		-var "box_tag=$(REPOSITORY)" packer.conf.libvirt.json
 
 boxes: $(MEDIADIR)/$(NV).ova
