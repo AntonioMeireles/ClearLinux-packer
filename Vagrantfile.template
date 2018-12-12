@@ -38,9 +38,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vbox.customize ['modifyvm', :id, "--nictype#{n}", 'virtio']
     end
   end
-  config.vm.provider 'libvirt' do |libvirt|
-    unless File.exist?(UEFI)
-      system("curl https://download.clearlinux.org/image/OVMF.fd -o #{UEFI}")
+  config.vm.provider 'libvirt' do |libvirt, override|
+    override.trigger.before :provision, :up, :resume do |req|
+      req.info = "Checking 'OVMF.fd' availability"
+      req.run = {
+        inline: "bash -c '[[ -f #{UEFI} ]] || \
+          curl https://download.clearlinux.org/image/OVMF.fd -o #{UEFI}'"
+      }
     end
     libvirt.loader = UEFI
     libvirt.driver = 'kvm'
