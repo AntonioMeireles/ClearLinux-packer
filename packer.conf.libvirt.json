@@ -44,7 +44,7 @@
 			],
 			"shutdown_command": "sudo /usr/bin/poweroff -p",
 			"format": "qcow2",
-			"accelerator": "hvf",
+			"accelerator": "kvm",
 			"disk_size": 40000,
 			"net_device": "virtio-net",
 			"disk_discard": "unmap",
