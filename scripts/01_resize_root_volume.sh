@@ -13,3 +13,6 @@ MAXSIZEMB=$(printf %s\\n 'unit MB print list' | parted | grep "Disk ${ROOT_DEVIC
 echo -e "F\\n3\\n${MAXSIZEMB}MB\\n" | parted "${ROOT_DEVICE}" ---pretend-input-tty resizepart
 partprobe ${ROOT_DEVICE}
 resize2fs ${ROOT_DEVICE}3
+
+swupd bundle-remove storage-utils
+
