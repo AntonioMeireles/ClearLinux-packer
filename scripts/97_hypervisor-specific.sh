@@ -8,8 +8,8 @@ set -o xtrace
 function lts-kernel() {
   echo "defaulting to LTS kernel"
   swupd bundle-add kernel-lts
-  lts="$(clr-boot-manager list-kernels | grep lts)"
-  clr-boot-manager set-kernel ${lts}
+  lts="$(clr-boot-manager list-kernels | grep lts | sed -e 's/ //g')"
+  clr-boot-manager set-kernel "${lts}"
   swupd bundle-remove kernel-native
 }
 

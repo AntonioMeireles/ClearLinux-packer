@@ -74,6 +74,8 @@ mkdir -p  /etc/systemd/system/systemd-udevd.service.d/
 	echo "ExecStartPost=/usr/bin/sleep 5"
 } > /etc/systemd/system/systemd-udevd.service.d/fix-iface-rename.conf
 
+systemctl start boot.mount
+
 clr-boot-manager update
 
 swupd clean

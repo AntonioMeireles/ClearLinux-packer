@@ -6,7 +6,6 @@ set -o nounset
 set -o xtrace
 
 echo '- Zeroing out empty space for better compressability'
-systemctl start boot.mount
 if [[ "${PACKER_BUILDER_TYPE}" == "qemu" ]]; then
     fstrim -av
     systemctl enable fstrim.timer
@@ -30,7 +29,6 @@ else
         /sbin/mkswap -U "${swapuuid}" "${swappart}"
     fi
 fi
-systemctl stop boot.mount
 sync
 
 
