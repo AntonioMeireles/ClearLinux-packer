@@ -13,6 +13,10 @@ function lts-kernel() {
   swupd bundle-remove kernel-native
 }
 
+# doesn't make much sense in this context ...
+# upstream should tweak it so that it only runs in non virtualized environments
+systemctl mask clr-power
+
 case "${PACKER_BUILDER_TYPE}" in
   vmware-vmx)
     echo "VMware detected..."

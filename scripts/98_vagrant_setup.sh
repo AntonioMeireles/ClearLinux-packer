@@ -48,9 +48,6 @@ chmod 0600 "${DOT_SSH}/vagrant"
 } > /etc/ssh/sshd_config
 chmod 0600 /etc/ssh/sshd_config
 
-mkdir -p /etc/tmpfiles.d
-touch /etc/tmpfiles.d/clr-power-tweaks.conf
-
 mkdir -p /etc/systemd/network/80-dhcp.network.d
 {
 	echo "[DHCP]"
