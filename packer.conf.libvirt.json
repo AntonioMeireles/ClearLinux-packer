@@ -18,7 +18,7 @@
 					"-global",
 					"virtio-pci.disable-modern=on"
 				], [
-					"--bios",
+					"-bios",
 					"media/OVMF.fd"
 				]
 			],
