@@ -2,7 +2,8 @@ BOX_NAME := ClearLinux
 OWNER ?= AntonioMeireles
 REPOSITORY := $(OWNER)/$(BOX_NAME)
 
-VERSION ?= $(shell curl -Ls https://download.clearlinux.org/latest)
+CLR_BASE_URL := https://download.clearlinux.org
+VERSION ?= $(shell curl -Ls $(CLR_BASE_URL)/latest)
 BUILD_ID ?= $(shell date -u '+%Y-%m-%d-%H%M')
 NV := $(BOX_NAME)-$(VERSION)
 
@@ -10,8 +11,8 @@ SEED_PREFIX = clear-$(VERSION)
 VMDK := $(SEED_PREFIX)-vmware.vmdk
 LIBVIRT := $(SEED_PREFIX)-kvm.img
 
-VMDK_SEED_URL := https://download.clearlinux.org/releases/$(VERSION)/clear/$(VMDK).xz
-LIBVIRT_SEED_URL := https://download.clearlinux.org/releases/$(VERSION)/clear/$(LIBVIRT).xz
+VMDK_SEED_URL := $(CLR_BASE_URL)/releases/$(VERSION)/clear/$(VMDK).xz
+LIBVIRT_SEED_URL := $(CLR_BASE_URL)/releases/$(VERSION)/clear/$(LIBVIRT).xz
 MEDIADIR := media
 BOXDIR := boxes
 PWD := `pwd`
@@ -20,7 +21,7 @@ PWD := `pwd`
 
 $(MEDIADIR)/OVMF.fd:
 	@mkdir -p $(MEDIADIR)
-	@curl -sSL https://download.clearlinux.org/image/OVMF.fd -o $(MEDIADIR)/OVMF.fd
+	@curl -sSL $(CLR_BASE_URL)/image/OVMF.fd -o $(MEDIADIR)/OVMF.fd
 	@ln -sf $(MEDIADIR)/OVMF.fd $(MEDIADIR)/bios.bin
 
 $(MEDIADIR)/$(VMDK):
@@ -33,8 +34,8 @@ $(MEDIADIR)/$(VMDK):
 $(MEDIADIR)/$(LIBVIRT):
 	@mkdir -p $(MEDIADIR)
 	@echo "downloading v$(VERSION) base image [KVM/libvirt]..."
-	@curl -sSL $(LIBVIRT_SEED_URL) -o $(MEDIADIR)/$(LIBVIRT).xz
-	@cd $(MEDIADIR) && unxz $(LIBVIRT).xz && cd -
+	@curl -sSL $(LIBVIRT_SEED_URL) -o /tmp/$(LIBVIRT).xz
+	@unxz -f /tmp/$(LIBVIRT).xz && mv /tmp/$(LIBVIRT) $(MEDIADIR)/
 	@echo "v$(VERSION) base image unpacked..."
 
 seed: $(MEDIADIR)/seed-$(VERSION)
@@ -54,16 +55,16 @@ $(MEDIADIR)/$(NV).ova: $(MEDIADIR)/$(VMDK)
 libvirt.box: $(MEDIADIR)/$(LIBVIRT) $(MEDIADIR)/OVMF.fd
 	@mkdir -p $(BOXDIR)
 
-	packer build  -force                                       \
+	packer build -force                                        \
 		-var "name=$(BOX_NAME)"                                   \
 		-var "version=$(VERSION)"                                  \
 		-var "box_tag=$(REPOSITORY)" packer.conf.libvirt.json
 
 boxes: $(MEDIADIR)/$(NV).ova
 	@mkdir -p $(BOXDIR)
-	packer build  -force                                               \
-		-var "name=$(BOX_NAME)"                                           \
-		-var "version=$(VERSION)"                                          \
+	packer build -force                                               \
+		-var "name=$(BOX_NAME)"                                          \
+		-var "version=$(VERSION)"                                         \
 		-var "box_tag=$(REPOSITORY)" packer.conf.vmware.json
 	packer build -force                                                    \
 		-var "name=$(BOX_NAME)"                                               \
