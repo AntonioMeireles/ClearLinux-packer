@@ -20,7 +20,6 @@
 				"swupd autoupdate --disable<enter>",
 				"mkdir -p /etc/ssh<enter>",
 				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
-				"swupd bundle-add openssh-server<enter>",
 				"systemctl mask tallow --now<enter>",
 				"systemctl enable sshd.socket --now<enter>"
 			],
