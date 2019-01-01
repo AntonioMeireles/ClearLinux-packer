@@ -52,7 +52,6 @@ chmod 0600 /etc/ssh/sshd_config
 mkdir -p /etc/systemd/network/80-dhcp.network.d
 {
 	echo "[DHCP]"
-	echo "DHCP=ipv4"
 	echo "SendHostname=false"
 	echo "ClientIdentifier=mac"
 } > /etc/systemd/network/80-dhcp.network.d/1stBootFix.conf
