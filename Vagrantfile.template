@@ -42,8 +42,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     override.trigger.before :provision, :up, :resume do |req|
       req.info = "Checking 'OVMF.fd' availability"
       req.run = {
-        inline: "bash -c '[[ -f #{UEFI} ]] || \
-          curl https://download.clearlinux.org/image/OVMF.fd -o #{UEFI}'"
+        # the 'mkdir' bellow is needed otherwise using remote libvirt hosts will
+        # fail. OTOH if talking to a remote libvirt host you'll need to reset
+        # 'libvirt.loader' to whatever is the location of the UEFI firmware on
+        # that host... in a ClearLinux host running libvirt that would be along:
+        # "libvirt.loader = '/usr/share/qemu/OVMF.fd"
+        inline: "bash -c '[[ -f #{UEFI} ]] || ( mkdir -p $(dirname #{UEFI}) && \
+          curl https://download.clearlinux.org/image/OVMF.fd -o #{UEFI} )'"
       }
     end
     libvirt.loader = UEFI
