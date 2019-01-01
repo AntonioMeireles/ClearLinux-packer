@@ -24,7 +24,7 @@
 				"systemctl mask tallow --now<enter>",
 				"systemctl enable sshd.socket --now<enter>"
 			],
-			"shutdown_command": "sudo /usr/bin/poweroff -p",
+			"shutdown_command": "systemctl poweroff",
 			"vboxmanage": [
 				[ "modifyvm", "{{.Name}}", "--memory", "2048" ],
 				[ "modifyvm", "{{.Name}}", "--ostype", "Linux26_64" ],
