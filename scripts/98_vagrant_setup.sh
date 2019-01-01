@@ -6,13 +6,14 @@ set -o nounset
 set -o xtrace
 
 export VAGRANT_USER="${VAGRANT_USER:-clear}"
-export VAGRANT_PASSWORD='$6$rounds=656000$OY1EmeRe9//dqf8D$KRUcAe5ezDDL4hDe7nCGdURxev0jnIpOAAtfFzhPdd9wmNouedwX7EMxUaF16yrxxOUgpQlrpHVsZkIokXDKv0'
+export VAGRANT_PASSWORD='V@grant!'
 export VAGRANT_HOME="/home/${VAGRANT_USER}"
 export DOT_SSH="${VAGRANT_HOME}/.ssh"
 export KEYS_URL="https://raw.githubusercontent.com/mitchellh/vagrant/master/keys"
 export SUDOERS="/etc/sudoers.d/vagrant"
 
-useradd --create-home --user-group --password ${VAGRANT_PASSWORD} "${VAGRANT_USER}"
+useradd --system --create-home --user-group --password "${VAGRANT_PASSWORD}" "${VAGRANT_USER}"
+echo -e 'V@grant!\nV@grant!' | passwd "${VAGRANT_USER}"
 
 mkdir -p "$(dirname ${SUDOERS})"
 
