@@ -9,7 +9,7 @@
 			"boot_wait": "20s",
 			"ssh_username": "root",
 			"ssh_password": "V@grant!",
-			"output_directory": "boxes",
+			"output_directory": "boxes/tmp",
 			"ssh_port": 22,
 			"ssh_wait_timeout": "5m",
 			"vm_name": "{{ user `name` }}",
@@ -61,10 +61,9 @@
 		[
 			{
 				"type": "vagrant",
-				"output": "boxes/{{user `name` }}-{{ user `version`}}.{{ .Provider }}.box",
+				"output": "boxes/{{ .Provider }}/{{user `name` }}-{{ user `version`}}.{{ .Provider }}.box",
 				"compression_level": 9,
-				"vagrantfile_template": "Vagrantfile.template",
-				"keep_input_artifact": true
+				"vagrantfile_template": "Vagrantfile.template"
 			},
 			{
 				"type": "vagrant-cloud",
