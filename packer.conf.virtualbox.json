@@ -72,14 +72,6 @@
 				"output": "boxes/{{ .Provider }}/{{user `name` }}-{{ user `version`}}.{{ .Provider }}.box",
 				"compression_level": 9,
 				"vagrantfile_template": "Vagrantfile.template"
-			},
-			{
-				"type": "vagrant-cloud",
-				"box_tag": "{{ user `box_tag`}}",
-				"access_token": "{{ user `cloud_token` }}",
-				"version": "{{user `version`}}",
-				"no_release": true,
-				"version_description": "---\n\n#### **release notes** - https://download.clearlinux.org/releases/{{user `version`}}/clear/RELEASENOTES\n\n---\n\nbuilt with **[ClearLinux-packer](https://github.com/AntonioMeireles/ClearLinux-packer)** - **[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)** is welcome!"
 			}
 		]
 	]
