@@ -42,6 +42,10 @@
 			"format": "qcow2",
 			"accelerator": "kvm",
 			"disk_size": 40000,
+			"net_device": "virtio-net",
+			"disk_discard": "unmap",
+			"disk_detect_zeroes": "unmap",
+			"disk_interface": "virtio-scsi",
 			"net_device": "virtio-net"
 		}
 	],

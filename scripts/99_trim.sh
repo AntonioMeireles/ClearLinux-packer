@@ -4,19 +4,10 @@ set -o errexit
 set -o pipefail
 set -o nounset
 set -o xtrace
+set +e
 
 echo '- Zeroing out empty space for better compressability'
-# /
-dd if=/dev/zero of=/EMPTY bs=1M || echo "dd exit code $? is suppressed"
-rm -f /EMPTY
-
-# /boot
-dd if=/dev/zero of=/boot/EMPTY bs=1M || echo "dd exit code $? is suppressed"
-rm -f /boot/EMPTY
-
-set +e
 swapuuid="$(/sbin/blkid -o value -l -s UUID -t TYPE=swap)"
-set -e
 if [[ "x${swapuuid}" != "x" ]]; then
     # zeroes swap partition to reduce box size, Swap disabled till reboot
     swappart="$(readlink -f /dev/disk/by-uuid/${swapuuid})"
@@ -25,6 +16,17 @@ if [[ "x${swapuuid}" != "x" ]]; then
     /sbin/mkswap -U "${swapuuid}" "${swappart}"
 fi
 
+if [[ "${PACKER_BUILDER_TYPE}" == "qemu" ]]; then
+    fstrim -av
+else
+    # /
+    dd if=/dev/zero of=/EMPTY bs=1M || echo "dd exit code $? is suppressed"
+    rm -f /EMPTY
+
+    # /boot
+    dd if=/dev/zero of=/boot/EMPTY bs=1M || echo "dd exit code $? is suppressed"
+    rm -f /boot/EMPTY
+fi
 sync
 
 
