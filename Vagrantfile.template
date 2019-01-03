@@ -34,6 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vbox.gui = false
     vbox.linked_clone = false
     vbox.customize ['modifyvm', :id, '--audio', 'none']
+    vbox.customize ['modifyvm', :id, '--hwvirtex', 'on']
     (1..8).each do |n|
       vbox.customize ['modifyvm', :id, "--nictype#{n}", 'virtio']
     end
