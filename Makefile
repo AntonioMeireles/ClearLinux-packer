@@ -118,7 +118,7 @@ release: ## Vagrant Cloud: make release boxes public
 
 .PHONY: vmware-test virtualbox-test libvirt-test
 vmware-test: $(BOXDIR)/vmware/$(NV).vmware.box ## Smoke Testing: VMware
-	@vagrant box add --name clear-test --provider vmware_desktop $(BOXDIR)/vmware/$(NV).vmware.box
+	@vagrant box add --name clear-test --provider vmware_desktop $(BOXDIR)/vmware/$(NV).vmware.box --force
 	@pushd extras/test;                                                                            \
 	vagrant up --provider vmware_desktop ;                                                        \
 	vagrant ssh -c "w; sudo swupd info" && echo "- VMware box (v$(VERSION)) looks OK" || exit 1; \
@@ -128,7 +128,7 @@ vmware-test: $(BOXDIR)/vmware/$(NV).vmware.box ## Smoke Testing: VMware
 	popd
 
 virtualbox-test: $(BOXDIR)/virtualbox/$(NV).virtualbox.box ## Smoke Testing: VirtualBox
-	@vagrant box add --name clear-test --provider virtualbox $(BOXDIR)/virtualbox/$(NV).virtualbox.box
+	@vagrant box add --name clear-test --provider virtualbox $(BOXDIR)/virtualbox/$(NV).virtualbox.box --force
 	@pushd extras/test;                                                                                \
 	vagrant up --provider virtualbox ;                                                                \
 	vagrant ssh -c "w; sudo swupd info" && echo "- Virtualbox box (v$(VERSION)) looks OK" || exit 1; \
@@ -138,7 +138,7 @@ virtualbox-test: $(BOXDIR)/virtualbox/$(NV).virtualbox.box ## Smoke Testing: Vir
 	popd
 
 libvirt-test: $(BOXDIR)/libvirt/$(NV).libvirt.box ## Smoke Testing: LibVirt
-	@vagrant box add --name clear-test --provider libvirt $(BOXDIR)/libvirt/$(NV).libvirt.box
+	@vagrant box add --name clear-test --provider libvirt $(BOXDIR)/libvirt/$(NV).libvirt.box --force
 	@pushd extras/test;                                                                             \
 	vagrant up --provider libvirt ;                                                                \
 	vagrant ssh -c "w; sudo swupd info" && echo "- Libvirt box (v$(VERSION)) looks OK" || exit 1; \
