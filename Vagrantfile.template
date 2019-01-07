@@ -62,6 +62,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   if Vagrant.has_plugin?('vagrant-proxyconf')
     config.proxy.http = (ENV['http_proxy'] || ENV['HTTP_PROXY'])
     config.proxy.https = (ENV['https_proxy'] || ENV['HTTPS_PROXY'])
-    config.proxy.no_proxy = (ENV['no_proxy'] || ENV['NO_PROXY'] || 'localhost,127.0.0.1')
+    config.proxy.no_proxy =
+      (ENV['no_proxy'] || ENV['NO_PROXY'] || 'localhost,127.0.0.1')
   end
 end

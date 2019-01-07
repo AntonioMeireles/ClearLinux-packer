@@ -77,7 +77,7 @@ libvirt: $(MEDIADIR)/$(LIBVIRT) $(MEDIADIR)/OVMF.fd ## Packer Build: LibVirt
 	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.$@.json
 
 .PHONY: create-release
-create-release: create-release ## Vagrant Cloud: create a new release
+create-release: ## Vagrant Cloud: create a new release
 	( cat new.tmpl.json | envsubst | curl --silent --header "Content-Type: application/json" \
 		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" $(VAGRANT_REPO)/versions      \
 		--data-binary @- ) && echo "created release $(VERSION) on Vagrant Cloud"

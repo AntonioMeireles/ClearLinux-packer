@@ -45,8 +45,7 @@
 			"net_device": "virtio-net",
 			"disk_discard": "unmap",
 			"disk_detect_zeroes": "unmap",
-			"disk_interface": "virtio-scsi",
-			"net_device": "virtio-net"
+			"disk_interface": "virtio-scsi"
 		}
 	],
 	"provisioners": [
