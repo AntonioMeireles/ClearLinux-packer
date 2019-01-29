@@ -5,3 +5,4 @@ output-vmware-vmx/
 .vagrant
 packer_cache
 tests
+.DS_Store
