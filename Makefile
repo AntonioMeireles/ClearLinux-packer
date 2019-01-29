@@ -66,18 +66,26 @@ $(MEDIADIR)/$(NV).ova: $(MEDIADIR)/$(VMDK)
 	@ovftool $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx $(MEDIADIR)/$(NV).ova
 	@cp $(MEDIADIR)/seed-$(VERSION)/$(NV).pv.vmx $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx
 
-.PHONY: virtualbox vmware libvirt
-virtualbox: $(MEDIADIR)/$(NV).ova ## Packer Build: VirtualBox
-	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.$@.json
+.PHONY: all virtualbox vmware libvirt
+all: virtualbox vmware libvirt ## Packer Build   All box flavors
 
-vmware: $(MEDIADIR)/$(NV).ova ## Packer Build: VMware
-	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.$@.json
+virtualbox: $(BOXDIR)/virtualbox/$(NV).virtualbox.box ## Packer Build   VirtualBox
 
-libvirt: $(MEDIADIR)/$(LIBVIRT) $(MEDIADIR)/OVMF.fd ## Packer Build: LibVirt
-	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.$@.json
+vmware: $(BOXDIR)/vmware/$(NV).vmware.box ## Packer Build   VMware
 
-.PHONY: create-release
-create-release: ## Vagrant Cloud: create a new release
+libvirt: $(BOXDIR)/libvirt/$(NV).libvirt.box ## Packer Build   LibVirt
+
+$(BOXDIR)/libvirt/$(NV).libvirt.box:  $(MEDIADIR)/$(LIBVIRT) $(MEDIADIR)/OVMF.fd
+	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.libvirt.json
+
+$(BOXDIR)/virtualbox/$(NV).virtualbox.box: $(MEDIADIR)/$(NV).ova
+	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.virtualbox.json
+
+$(BOXDIR)/vmware/$(NV).vmware.box: $(MEDIADIR)/$(NV).ova
+	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.vmware.json
+
+.PHONY: release
+release: ## Vagrant Cloud  create a new release
 	( cat new.tmpl.json | envsubst | curl --silent --header "Content-Type: application/json" \
 		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" $(VAGRANT_REPO)/versions      \
 		--data-binary @- ) && echo "created release $(VERSION) on Vagrant Cloud"
@@ -90,34 +98,37 @@ create-release: ## Vagrant Cloud: create a new release
 		$(VAGRANT_REPO)/version/${VERSION}/providers \
 		--data '{"provider": {"name": "vmware_desktop"}}'
 	curl --header "Content-Type: application/json" \
-    --header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
-    $(VAGRANT_REPO)/version/${VERSION}/providers \
-    --data '{"provider": {"name": "libvirt"}}'
+		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
+		$(VAGRANT_REPO)/version/${VERSION}/providers \
+		--data '{"provider": {"name": "libvirt"}}'
 
 .PHONY: upload-libvirt-box
-upload-libvirt-box: $(BOXDIR)/libvirt/$(NV).libvirt.box ## Vagrant Cloud: LibVirt upload
+upload-libvirt-box: $(BOXDIR)/libvirt/$(NV).libvirt.box ## Vagrant Cloud  LibVirt upload
 	@curl $$(curl -s --header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
 		$(VAGRANT_REPO)/version/${VERSION}/provider/libvirt/upload | jq .upload_path | tr -d \") \
 		--upload-file $(BOXDIR)/libvirt/$(NV).libvirt.box && echo "LibVirt box (v$(VERSION)) uploaded"
 
 .PHONY: upload-virtualbox-box
-upload-virtualbox-box: $(BOXDIR)/virtualbox/$(NV).virtualbox.box ## Vagrant Cloud: VirtualBox upload
+upload-virtualbox-box: $(BOXDIR)/virtualbox/$(NV).virtualbox.box ## Vagrant Cloud  VirtualBox upload
 	@curl $$(curl -s --header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
 		$(VAGRANT_REPO)/version/${VERSION}/provider/virtualbox/upload | jq .upload_path | tr -d \") \
 		--upload-file $(BOXDIR)/virtualbox/$(NV).virtualbox.box && echo "VirtualBox box (v$(VERSION)) uploaded"
 
 .PHONY: upload-vmware-box
-upload-vmware-box: $(BOXDIR)/vmware/$(NV).vmware.box ## Vagrant Cloud: VMware upload
+upload-vmware-box: $(BOXDIR)/vmware/$(NV).vmware.box ## Vagrant Cloud  VMware upload
 	@curl $$(curl -s --header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
 		$(VAGRANT_REPO)/version/${VERSION}/provider/vmware_desktop/upload | jq .upload_path | tr -d \") \
 		--upload-file $(BOXDIR)/vmware/$(NV).vmware.box && echo "VMware box (v$(VERSION)) uploaded"
 
-release: ## Vagrant Cloud: make release boxes public
+.PHONY: upload-all publish
+upload-all: upload-virtualbox-box upload-libvirt-box upload-vmware-box ## Vagrant Cloud  Uploads all built boxes
+
+publish: ## Vagrant Cloud  make uploaded boxes public
 	@curl --silent --header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
 		$(VAGRANT_REPO)/version/$(VERSION)/release --request PUT | jq .
 
-.PHONY: vmware-test virtualbox-test libvirt-test
-vmware-test: $(BOXDIR)/vmware/$(NV).vmware.box ## Smoke Testing: VMware
+.PHONY: test-vmware test-virtualbox test-libvirt
+test-vmware: $(BOXDIR)/vmware/$(NV).vmware.box ## Smoke Testing  VMware
 	@vagrant box add --name clear-test --provider vmware_desktop $(BOXDIR)/vmware/$(NV).vmware.box --force
 	@pushd extras/test;                                                                            \
 	vagrant up --provider vmware_desktop ;                                                        \
@@ -127,7 +138,7 @@ vmware-test: $(BOXDIR)/vmware/$(NV).vmware.box ## Smoke Testing: VMware
 	vagrant box remove clear-test --provider vmware_desktop;                                 \
 	popd
 
-virtualbox-test: $(BOXDIR)/virtualbox/$(NV).virtualbox.box ## Smoke Testing: VirtualBox
+test-virtualbox: $(BOXDIR)/virtualbox/$(NV).virtualbox.box ## Smoke Testing  VirtualBox
 	@vagrant box add --name clear-test --provider virtualbox $(BOXDIR)/virtualbox/$(NV).virtualbox.box --force
 	@pushd extras/test;                                                                                \
 	vagrant up --provider virtualbox ;                                                                \
@@ -137,7 +148,7 @@ virtualbox-test: $(BOXDIR)/virtualbox/$(NV).virtualbox.box ## Smoke Testing: Vir
 	vagrant box remove clear-test --provider virtualbox;                                          \
 	popd
 
-libvirt-test: $(BOXDIR)/libvirt/$(NV).libvirt.box ## Smoke Testing: LibVirt
+test-libvirt: $(BOXDIR)/libvirt/$(NV).libvirt.box ## Smoke Testing  LibVirt
 	@vagrant box add --name clear-test --provider libvirt $(BOXDIR)/libvirt/$(NV).libvirt.box --force
 	@pushd extras/test;                                                                             \
 	vagrant up --provider libvirt ;                                                                \
@@ -149,7 +160,7 @@ libvirt-test: $(BOXDIR)/libvirt/$(NV).libvirt.box ## Smoke Testing: LibVirt
 	ssh clear@libvirt-host.clearlinux.local "sudo virsh vol-delete clear-test_vagrant_box_image_0.img default"
 
 .PHONY: clean
-clean:
+clean: # does what it says ...
 	rm -rf $(MEDIADIR)/* $(BOXDIR)/* packer_cache
 
 
