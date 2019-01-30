@@ -58,13 +58,7 @@
 				"scripts/97_hypervisor-specific.sh"
 			],
 			"pause_before": "5s"
-		}, {
-			"type": "shell",
-			"expect_disconnect": true,
-			"start_retry_timeout": "600s",
-			"scripts": [
-				"scripts/90_reboot.sh"
-			]
+
 		}, {
 			"type": "shell",
 			"scripts": [

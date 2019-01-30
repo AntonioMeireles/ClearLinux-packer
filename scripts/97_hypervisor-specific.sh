@@ -10,7 +10,14 @@ function lts-kernel() {
   swupd bundle-add kernel-lts
   lts="$(clr-boot-manager list-kernels | grep lts | sed -e 's/ //g')"
   clr-boot-manager set-kernel "${lts}"
-  swupd bundle-remove kernel-native
+  case "${PACKER_BUILDER_TYPE}" in
+    qemu)
+      swupd bundle-remove kernel-kvm
+    ;;
+    *)
+      swupd bundle-remove kernel-native
+    ;;
+  esac
 }
 
 # doesn't make much sense in this context ...
@@ -30,6 +37,6 @@ case "${PACKER_BUILDER_TYPE}" in
   ;;
   qemu)
     echo "qemu/kvm detected..."
-    echo
+    lts-kernel
   ;;
 esac
