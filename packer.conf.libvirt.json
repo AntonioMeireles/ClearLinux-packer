@@ -7,14 +7,10 @@
 			"type": "qemu",
 			"use_default_display": true,
 			"headless": false,
+			"memory": 2048,
+			"cpus": 2,
 			"qemuargs": [
 				[
-					"-m",
-					"2048M"
-				], [
-					"-smp",
-					"2"
-				], [
 					"-bios",
 					"media/OVMF.fd"
 				]
