@@ -64,5 +64,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.proxy.https = (ENV['https_proxy'] || ENV['HTTPS_PROXY'])
     config.proxy.no_proxy =
       (ENV['no_proxy'] || ENV['NO_PROXY'] || 'localhost,127.0.0.1')
+    # since we're masking it by default ...
+    config.proxy.enabled = { docker: false }
   end
 end
