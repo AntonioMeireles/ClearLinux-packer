@@ -12,12 +12,12 @@ unless ['plugin'].include? ARGV[0]
       version: '>= 1.0.16'
     }
   ].each do |plugin|
-    unless Vagrant.has_plugin?(plugin[:name], plugin[:version])
-      verb = 'install'
-      verb = 'update' if Vagrant.has_plugin?(plugin[:name])
-      system("vagrant plugin #{verb} #{plugin[:name]}", chdir: '/tmp') || exit!
-      need_restart = true
-    end
+    next if Vagrant.has_plugin?(plugin[:name], plugin[:version])
+
+    verb = 'install'
+    verb = 'update' if Vagrant.has_plugin?(plugin[:name])
+    system("vagrant plugin #{verb} #{plugin[:name]}", chdir: '/tmp') || exit!
+    need_restart = true
   end
 end
 
