@@ -1,18 +1,19 @@
 # Intel's [Clear Linux](https://clearlinux.org) _guest_ boxes for [Vagrant](http://www.vagrantup.com/)
 
-> This is *work in progress*,
+> This is *work in progress*, your
 > **[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)**
 > is welcome.
 
 ## Pre-requisites
 
-- You'll need to have installed the (latest)
-  [`vagrant-guests-clearlinux`](https://github.com/AntonioMeireles/vagrant-guests-clearlinux)
-  plugin release:
+These boxes require the most recent
+[`vagrant-guests-clearlinux`](https://github.com/AntonioMeireles/vagrant-guests-clearlinux) plugin release, which *a priori* will be installed automatically when you use them
 
-  ```bash
-  vagrant plugin install vagrant-guests-clearlinux
-  ```
+You can also manually install the [`vagrant-guests-clearlinux`](https://github.com/AntonioMeireles/vagrant-guests-clearlinux) plugin by...
+
+```bash
+vagrant plugin install vagrant-guests-clearlinux
+```
 
 ## TL;DR
 
@@ -32,6 +33,31 @@ vagrant up
 > ```bash
 > vagrant up --provider (virtualbox|vmware|libvirt)
 > ```
+
+## Tips & Tricks
+
+- By default boxes are loaded in _headless_ mode.
+
+  When using Virtualbox or VMware if you wish to have access to the boot console you can boot them
+  in graphical mode by invoking `vagrant` with `HEADLESS=false` set in your environment.
+- if you want to consume additional Vagrant plugins from your *Vagrantfile* the prefered way to do it
+  is along the snippet bellow...
+
+  ```ruby
+  additional_plugins = {
+    'vagrant-compose' => {
+      'version' => '>= 0.7.5'
+    },
+    'vagrant-reload' => {
+      'version' => '>= 0.0.1'
+    }
+  }
+
+  Vagrant.configure(2) do |config|
+    config.vagrant.plugins = additional_plugins
+
+  ...
+  ```
 
 ## Vagrant Cloud
 
