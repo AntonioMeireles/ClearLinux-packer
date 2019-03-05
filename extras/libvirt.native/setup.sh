@@ -5,8 +5,6 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-command -v virsh || swupd bundle-add kvm-host make
-
 systemctl enable libvirtd --now
 
 for group in kvm libvirt; do
