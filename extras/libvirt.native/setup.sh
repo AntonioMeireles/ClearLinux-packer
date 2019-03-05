@@ -17,7 +17,9 @@ chmod g+rwx /var/lib/libvirt/{isos,images}/
 
 echo 'export LIBVIRT_DEFAULT_URI="qemu:///system"' > /etc/profile.d/libvirt.conf
 
-wget -q https://releases.hashicorp.com/packer/1.3.4/packer_1.3.4_linux_amd64.zip
-unzip -qq packer_1.3.4_linux_amd64.zip
-mv packer /usr/local/bin
-rm -rf packer_1.3.4_linux_amd64.zip
+PACKER_VERSION=1.3.5
+PACKER_ZIP=packer_${PACKER_VERSION}_linux_amd64.zip
+PACKER_URL=https://releases.hashicorp.com/packer/${PACKER_VERSION}/${PACKER_ZIP}
+
+curl -s ${PACKER_URL} -o ${PACKER_ZIP}
+unzip -qq ${PACKER_ZIP} && mv packer /usr/local/bin && rm -rf ${PACKER_ZIP}
