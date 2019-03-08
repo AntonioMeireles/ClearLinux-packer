@@ -54,8 +54,9 @@
 			"type": "shell",
 			"expect_disconnect": true,
 			"start_retry_timeout": "600s",
-			"scripts": [
-				"scripts/90_reboot.sh"
+			"inline": [
+				"echo 'rebooting...'",
+				"reboot"
 			]
 		}, {
 			"type": "shell",
