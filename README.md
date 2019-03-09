@@ -28,13 +28,18 @@ vagrant init AntonioMeireles/ClearLinux
 vagrant up
 ```
 
-> if you happen to be running multiple providers in same box just specify which
-> one you want to actually use when invoking `vagrant`...
+> if you happen to be running multiple providers in the same vagrant host just specify which
+> one you want to actually consume when invoking `vagrant`...
+>
 > ```bash
 > vagrant up --provider (virtualbox|vmware|libvirt)
 > ```
 
 ## Tips & Tricks
+
+- take a deep look at the *guest* plugin available features and capabilities by reading its
+  [documentation](https://github.com/AntonioMeireles/vagrant-guests-clearlinux/blob/master/README.md)
+  in order to take maximum advantage of this.
 
 - By default boxes are loaded in _headless_ mode.
 
@@ -64,7 +69,7 @@ vagrant up
 This project Vagrant boxes are hosted on **Vagrant Cloud** at
 **[AntonioMeireles/Clearlinux](https://app.vagrantup.com/AntonioMeireles/boxes/ClearLinux)**
 
-## What else do you need to know ?
+## What else do you need to know?
 
 - **All** boxes use para-virtualized drivers by default, when possible, for optimal performance.
 - Graphical/Desktop performance optimization wasn't a concern at all (sound is disabled, etc) as the
