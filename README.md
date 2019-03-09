@@ -64,6 +64,15 @@ vagrant up
   ...
   ```
 
+- the available Clear Linux boxes ship with a default timezone set unlikely
+  to suit everyone (Author's one `Portugal` *aka* `Europe/Lisbon`).
+
+  Here's how to programatically set your own one straight from the `Vagrantfile`:
+
+  ```ruby
+  config.vm.provision :set_timezone, timezone: 'Asia/Dili'
+  ```
+
 ## Vagrant Cloud
 
 This project Vagrant boxes are hosted on **Vagrant Cloud** at
