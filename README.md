@@ -1,8 +1,4 @@
-# Intel's [Clear Linux](https://clearlinux.org) _guest_ boxes for [Vagrant](http://www.vagrantup.com/)
-
-> This is *work in progress*, your
-> **[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)**
-> is welcome.
+# Intel's [Clear Linux](https://clearlinux.org/about) _guest_ boxes for [Vagrant](http://www.vagrantup.com/)
 
 ## Pre-requisites
 
@@ -174,3 +170,10 @@ By default these boxes are updated around once a week, unless:
   ([changelog](https://github.com/AntonioMeireles/vagrant-guests-clearlinux/commits/master)) or to
   the box itself ([changelog](https://github.com/AntonioMeireles/ClearLinux-packer/commits/master)).
 - key features are added to ClearLinux upstream (say - refreshed VirtualBox drivers, key bug fixes, etc).
+
+## contributing
+
+This is an [open source](http://opensource.org/osd) project released under
+the [Apache License, Version 2.0](http://opensource.org/licenses/Apache-2.0).
+[Contributions](https://github.com/AntonioMeireles/ClearLinux-packer/pulls) and [suggestions](https://github.com/AntonioMeireles/ClearLinux-packer/issues) are gladly welcomed!
+
