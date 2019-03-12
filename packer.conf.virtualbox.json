@@ -5,26 +5,16 @@
 	"builders": [
 		{
 			"type": "virtualbox-ovf",
-			"source_path": "media/ClearLinux-{{user `version`}}.ova",
+			"source_path": "media/clear-{{user `version`}}-virtualbox-factory/ClearLinux-{{user `version`}}.ova",
 			"boot_wait": "20s",
-			"ssh_username": "root",
+			"ssh_username": "clear",
 			"ssh_password": "V@grant!",
 			"output_directory": "boxes/tmp",
 			"ssh_port": 22,
 			"ssh_wait_timeout": "5m",
 			"vm_name": "{{ user `name` }}",
+			"shutdown_command": "sudo systemctl poweroff",
 			"guest_additions_mode": "disable",
-			"boot_command": [
-				"<wait5><wait5>",
-				"root<enter><wait>V@grant!<enter><wait>V@grant!<enter><wait>",
-				"swupd autoupdate --disable<enter>",
-				"mkdir -p /etc/ssh<enter>",
-				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
-				"swupd bundle-add openssh-server<enter>",
-				"systemctl mask tallow --now<enter>",
-				"systemctl enable sshd.socket --now<enter>"
-			],
-			"shutdown_command": "systemctl poweroff",
 			"vboxmanage": [
 				[ "modifyvm", "{{.Name}}", "--memory", "2048" ],
 				[ "modifyvm", "{{.Name}}", "--ostype", "Linux26_64" ],
@@ -43,11 +33,8 @@
 	"provisioners": [
 		{
 			"type": "shell",
-			"scripts": [
-				"scripts/01_resize_root_volume.sh",
-				"scripts/02_add_common_bundles.sh",
-				"scripts/96_hooks.sh",
-				"scripts/97_hypervisor-specific.sh"
+			"inline": [
+				"sudo timedatectl set-ntp true"
 			],
 			"pause_before": "5s"
 		}, {
@@ -56,13 +43,12 @@
 			"start_retry_timeout": "600s",
 			"inline": [
 				"echo 'rebooting...'",
-				"reboot"
+				"sudo reboot"
 			]
 		}, {
 			"type": "shell",
-			"scripts": [
-				"scripts/98_vagrant_setup.sh",
-				"scripts/99_trim.sh"
+			"inline": [
+				"uname -a; swupd info"
 			],
 			"pause_before": "5s"
 		}
@@ -72,7 +58,6 @@
 			{
 				"type": "vagrant",
 				"output": "boxes/{{ .Provider }}/{{user `name` }}-{{ user `version`}}.{{ .Provider }}.box",
-				"compression_level": 9,
 				"vagrantfile_template": "Vagrantfile.template.rb"
 			}
 		]

@@ -11,14 +11,16 @@ BUILD_ID ?= $(shell date -u '+%Y-%m-%d-%H%M')
 NV := $(BOX_NAME)-$(VERSION)
 
 SEED_PREFIX = clear-$(VERSION)
-VMDK := $(SEED_PREFIX)-vmware.vmdk
-LIBVIRT := $(SEED_PREFIX)-kvm.img
 
-VMDK_SEED_URL := $(CLR_RELEASE_URL)/$(VMDK).xz
-LIBVIRT_SEED_URL := $(CLR_RELEASE_URL)/$(LIBVIRT).xz
+VB_GA ?= $(shell curl -Ls http://download.virtualbox.org/virtualbox/LATEST.TXT)
+
 MEDIADIR := media
 BOXDIR := boxes
 PWD := `pwd`
+
+VMWARE_FACTORY := $(MEDIADIR)/$(SEED_PREFIX)-vmware-factory
+VIRTUALBOX_FACTORY := $(MEDIADIR)/$(SEED_PREFIX)-virtualbox-factory
+LIBVIRT_FACTORY := $(MEDIADIR)/$(SEED_PREFIX)-libvirt-factory
 
 VAGRANT_REPO = https://app.vagrantup.com/api/v1/box/$(REPOSITORY)
 
@@ -33,38 +35,75 @@ help:
 	@echo "By default the target VERSION is the 'latest' one, currently $(VERSION)"
 	@echo "To target a specific one add 'VERSION=...' to your make invocation"
 	@echo
+
 $(MEDIADIR)/OVMF.fd:
 	@mkdir -p $(MEDIADIR)
 	@curl -sSL $(CLR_BASE_URL)/image/OVMF.fd -o $(MEDIADIR)/OVMF.fd
 
-$(MEDIADIR)/$(VMDK):
+$(LIBVIRT_FACTORY).img:
 	@mkdir -p $(MEDIADIR)
-	@echo "downloading v$(VERSION) base image [VMDK]..."
-	@curl -sSL $(VMDK_SEED_URL) -o $(MEDIADIR)/$(VMDK).xz
-	@cd $(MEDIADIR) && unxz $(VMDK).xz && vmware-vdiskmanager -x 40Gb $(VMDK) && cd -
-	@echo "v$(VERSION) base image unpacked..."
+	# generating v$(VERSION) base image for libVirt guests...
+	sed -e "s,^version:.*,version: $(VERSION)," builders/libvirt.yml > builders/libvirt.yml.$(VERSION)
+	sudo clr-installer --config builders/libvirt.yml.$(VERSION) -l 4 -b installer:$(LIBVIRT_FACTORY).img
+	rm -rf builders/libvirt.yml.$(VERSION)
 
-$(MEDIADIR)/$(LIBVIRT):
-	@mkdir -p $(MEDIADIR)
-	@echo "downloading v$(VERSION) base image [KVM/libvirt]..."
-	@curl -sSL $(LIBVIRT_SEED_URL) -o /tmp/$(LIBVIRT).xz
-	@unxz -f /tmp/$(LIBVIRT).xz && mv /tmp/$(LIBVIRT) $(MEDIADIR)/
-	@echo "v$(VERSION) base image unpacked..."
+$(VIRTUALBOX_FACTORY).vmdk:
+		@mkdir -p $(MEDIADIR)
+		# for now we just reuse libvirt base image
+		# converting libvirt img to VMDK...
+		qemu-img convert $(LIBVIRT_FACTORY).img -O vmdk $(VIRTUALBOX_FACTORY).vmdk
 
-.PHONY: seed
-seed: $(MEDIADIR)/seed-$(VERSION)
-
-$(MEDIADIR)/$(NV).ova: $(MEDIADIR)/$(VMDK)
-	@mkdir -p $(MEDIADIR)/seed-$(VERSION)
+$(VIRTUALBOX_FACTORY)/$(NV).ova: $(VIRTUALBOX_FACTORY).vmdk
+	@mkdir -p $(VIRTUALBOX_FACTORY)
+	# synthethising VirtualBox OVA
 	@for f in pv.vmx vmx vmxf vmsd plist; do                                           \
-		cp template/$(BOX_NAME).$$f.tmpl $(MEDIADIR)/seed-$(VERSION)/$(NV).$$f; done
-	@(cd $(MEDIADIR)/seed-$(VERSION); gsed -i "s,VERSION,$(VERSION)," $(BOX_NAME)-*)
-	@ln -sf ../$(VMDK) $(MEDIADIR)/seed-$(VERSION)/
-	@(cd $(MEDIADIR)/seed-$(VERSION);                                      \
-		gsed -i "s,VMDK_SIZE,$$(/usr/bin/stat -f"%z" ../$(VMDK))," $(BOX_NAME)-* )
-	@echo "vmware fusion VM (v$(VERSION)) syntetised from vmdk"
-	@ovftool $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx $(MEDIADIR)/$(NV).ova
-	@cp $(MEDIADIR)/seed-$(VERSION)/$(NV).pv.vmx $(MEDIADIR)/seed-$(VERSION)/$(NV).vmx
+		cp template/$(BOX_NAME).$$f.tmpl $(VIRTUALBOX_FACTORY)/$(NV).$$f; done
+
+	@pushd $(VIRTUALBOX_FACTORY) && sed -i "s,VERSION,$(VERSION)," $(BOX_NAME)-* && popd
+
+	@ln -sf ../$(SEED_PREFIX)-virtualbox-factory.vmdk $(VIRTUALBOX_FACTORY)/
+
+	@pushd $(VIRTUALBOX_FACTORY) && sed -i "s,VMDK_SIZE,$$( stat --printf="%s" ../$(SEED_PREFIX)-virtualbox-factory.vmdk)," $(BOX_NAME)-* && popd
+
+	ovftool $(VIRTUALBOX_FACTORY)/$(NV).vmx $(VIRTUALBOX_FACTORY)/$(NV).ova
+	# VirtualBox VM (OVA) syntethised from vmdk
+
+$(VMWARE_FACTORY).vmdk:
+		@mkdir -p $(MEDIADIR)
+		# generating v$(VERSION) base image for VMware guests...
+		sed -e "s,^version:.*,version: $(VERSION)," builders/vmware.yml > builders/vmware.yml.$(VERSION)
+		sudo clr-installer --config builders/vmware.yml.$(VERSION) -l 4 -b installer:$(VMWARE_FACTORY).img
+		rm -rf builders/vmware.yml.$(VERSION)
+		# finally, converting to VMDK...
+		qemu-img convert $(VMWARE_FACTORY).img -O vmdk $(VMWARE_FACTORY).vmdk
+
+$(VMWARE_FACTORY)/$(NV).vmx: $(VMWARE_FACTORY).vmdk
+	@mkdir -p $(VMWARE_FACTORY)
+
+	@for f in pv.vmx vmx vmxf vmsd plist; do                                           \
+		cp template/$(BOX_NAME).$$f.tmpl $(VMWARE_FACTORY)/$(NV).$$f; done
+
+	@cp $(VMWARE_FACTORY)/$(NV).pv.vmx $(VMWARE_FACTORY)/$(NV).vmx
+
+	pushd $(VMWARE_FACTORY) && sed -i "s,VERSION,$(VERSION)," $(BOX_NAME)-* && popd
+
+	@ln -sf ../$(SEED_PREFIX)-vmware-factory.vmdk $(VMWARE_FACTORY)/
+
+	pushd $(VMWARE_FACTORY) && sed -i "s,VMDK_SIZE,$$( stat --printf="%s" ../$(SEED_PREFIX)-vmware-factory.vmdk)," $(BOX_NAME)-* && popd
+
+	# vmware fusion VM (v$(VERSION)) syntetised from vmdk
+
+.PHONY: $(MEDIADIR)/vmware
+$(MEDIADIR)/vmware: $(VMWARE_FACTORY)/$(NV).vmx
+
+.PHONY: $(MEDIADIR)/libvirt
+$(MEDIADIR)/libvirt: $(LIBVIRT_FACTORY).img
+
+.PHONY: $(MEDIADIR)/virtualbox
+$(MEDIADIR)/virtualbox: $(VIRTUALBOX_FACTORY).vmdk
+
+.PHONY: media
+media: $(VMWARE_FACTORY)/$(NV).vmx $(LIBVIRT_FACTORY).img $(VIRTUALBOX_FACTORY).vmdk  ## Base Builder   Assembles all media needed to pack the boxes
 
 .PHONY: all virtualbox vmware libvirt
 all: virtualbox vmware libvirt ## Packer Build   All box flavors
@@ -75,14 +114,14 @@ vmware: $(BOXDIR)/vmware/$(NV).vmware.box ## Packer Build   VMware
 
 libvirt: $(BOXDIR)/libvirt/$(NV).libvirt.box ## Packer Build   LibVirt
 
-$(BOXDIR)/libvirt/$(NV).libvirt.box:  $(MEDIADIR)/$(LIBVIRT) $(MEDIADIR)/OVMF.fd
-	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.libvirt.json
+$(BOXDIR)/libvirt/$(NV).libvirt.box: $(LIBVIRT_FACTORY).img $(MEDIADIR)/OVMF.fd
+	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" -only=qemu packer.conf.libvirt.json
 
-$(BOXDIR)/virtualbox/$(NV).virtualbox.box: $(MEDIADIR)/$(NV).ova
-	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.virtualbox.json
+$(BOXDIR)/virtualbox/$(NV).virtualbox.box: $(VIRTUALBOX_FACTORY)/$(NV).ova
+	packer build -force -var "name=$(BOX_NAME)" -var "vb_ga=$(VB_GA)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" -only=virtualbox-ovf packer.conf.virtualbox.json
 
-$(BOXDIR)/vmware/$(NV).vmware.box: $(MEDIADIR)/$(NV).ova
-	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" packer.conf.vmware.json
+$(BOXDIR)/vmware/$(NV).vmware.box: $(VMWARE_FACTORY)/$(NV).vmx
+	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" -only=vmware-vmx packer.conf.vmware.json
 
 .PHONY: release
 release: ## Vagrant Cloud  create a new release

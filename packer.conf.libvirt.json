@@ -5,6 +5,15 @@
 	"builders": [
 		{
 			"type": "qemu",
+			"iso_url": "media/clear-{{user `version`}}-libvirt-factory.img",
+			"boot_wait": "20s",
+			"ssh_username": "clear",
+			"ssh_password": "V@grant!",
+			"output_directory": "boxes/tmp",
+			"ssh_port": 22,
+			"ssh_wait_timeout": "5m",
+			"vm_name": "{{ user `name` }}",
+			"shutdown_command": "sudo systemctl poweroff",
 			"use_default_display": true,
 			"headless": false,
 			"memory": 2048,
@@ -15,43 +24,20 @@
 					"media/OVMF.fd"
 				]
 			],
-			"iso_url": "media/clear-{{user `version`}}-kvm.img",
 			"iso_checksum_type": "none",
 			"disk_image": true,
-			"boot_wait": "30s",
-			"ssh_username": "root",
-			"ssh_password": "V@grant!",
-			"output_directory": "boxes/tmp",
-			"ssh_port": 22,
-			"ssh_wait_timeout": "5m",
-			"vm_name": "{{ user `name` }}",
-			"boot_command": [
-				"<wait5><wait5>",
-				"root<enter><wait>V@grant!<enter><wait>V@grant!<enter><wait>",
-				"swupd autoupdate --disable<enter>",
-				"mkdir -p /etc/ssh<enter>",
-				"echo 'PermitRootLogin yes' > /etc/ssh/sshd_config<enter>",
-				"systemctl mask tallow --now<enter>",
-				"systemctl enable sshd.socket --now<enter>"
-			],
-			"shutdown_command": "systemctl poweroff",
 			"format": "qcow2",
 			"accelerator": "kvm",
-			"disk_size": 40000,
+			"disk_size": 40960,
 			"net_device": "virtio-net",
-			"disk_discard": "unmap",
-			"disk_detect_zeroes": "unmap",
 			"disk_interface": "virtio"
 		}
 	],
 	"provisioners": [
 		{
 			"type": "shell",
-			"scripts": [
-				"scripts/01_resize_root_volume.sh",
-				"scripts/02_add_common_bundles.sh",
-				"scripts/96_hooks.sh",
-				"scripts/97_hypervisor-specific.sh"
+			"inline": [
+				"sudo timedatectl set-ntp true"
 			],
 			"pause_before": "5s"
 		}, {
@@ -60,13 +46,12 @@
 			"start_retry_timeout": "600s",
 			"inline": [
 				"echo 'rebooting...'",
-				"reboot"
+				"sudo reboot"
 			]
 		}, {
 			"type": "shell",
-			"scripts": [
-				"scripts/98_vagrant_setup.sh",
-				"scripts/99_trim.sh"
+			"inline": [
+				"uname -a; swupd info"
 			],
 			"pause_before": "5s"
 		}
@@ -76,7 +61,6 @@
 			{
 				"type": "vagrant",
 				"output": "boxes/{{ .Provider }}/{{user `name` }}-{{ user `version`}}.{{ .Provider }}.box",
-				"compression_level": 9,
 				"vagrantfile_template": "Vagrantfile.template.rb"
 			}
 		]

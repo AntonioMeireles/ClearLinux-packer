@@ -1,0 +1,4 @@
+[Match]
+  Driver=virtio_net vmxnet3
+[Link]
+  NamePolicy=path
