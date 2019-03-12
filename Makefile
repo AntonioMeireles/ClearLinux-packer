@@ -47,7 +47,7 @@ $(LIBVIRT_FACTORY).img:
 	sudo clr-installer --config builders/libvirt.yml.$(VERSION) -l 4 -b installer:$(LIBVIRT_FACTORY).img
 	rm -rf builders/libvirt.yml.$(VERSION)
 
-$(VIRTUALBOX_FACTORY).vmdk:
+$(VIRTUALBOX_FACTORY).vmdk: $(LIBVIRT_FACTORY).img
 		@mkdir -p $(MEDIADIR)
 		# for now we just reuse libvirt base image
 		# converting libvirt img to VMDK...
