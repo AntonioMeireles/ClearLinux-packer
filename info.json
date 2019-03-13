@@ -1,0 +1,5 @@
+{
+  "Author": "António Meireles <antonio.meireles@reformi.st>",
+  "Description": "Intel's Clear Linux guest boxes for Vagrant.",
+  "Feedback": "https://github.com/AntonioMeireles/ClearLinux-packer"
+}

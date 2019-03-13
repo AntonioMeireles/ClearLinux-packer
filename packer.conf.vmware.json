@@ -56,7 +56,10 @@
 				"type": "vagrant",
 				"output": "boxes/{{ .Provider }}/{{user `name` }}-{{ user `version`}}.{{ .Provider }}.box",
 				"compression_level": 9,
-				"vagrantfile_template": "Vagrantfile.template.rb"
+				"vagrantfile_template": "Vagrantfile.template.rb",
+				"include": [
+					"info.json"
+				]
 			}
 		]
 	]
