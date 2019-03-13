@@ -18,6 +18,12 @@
 				"cpuid.coresPerSocket": "1",
 				"memsize": "2048",
 				"numvcpus": "2"
+			},
+			"vmx_data_post": {
+				"cleanShutdown": "TRUE",
+				"softPowerOff": "FALSE",
+				"ethernet0.startConnected": "TRUE",
+				"ethernet0.wakeonpcktrcv": "false"
 			}
 		}
 	],

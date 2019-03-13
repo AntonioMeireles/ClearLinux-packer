@@ -26,7 +26,7 @@
 				[ "modifyvm", "{{.Name}}", "--boot1", "disk" ],
 				[ "modifyvm", "{{.Name}}", "--longmode", "on" ],
 				[ "modifyvm", "{{.Name}}", "--hwvirtex", "on" ],
-				[ "modifyvm", "{{.Name}}", "--audio", "none" ]
+				[ "modifyvm", "{{.Name}}", "--vram", "64" ]
 			]
 		}
 	],

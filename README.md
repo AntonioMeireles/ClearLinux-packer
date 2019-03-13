@@ -81,9 +81,10 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
 ## What else do you need to know?
 
 - **All** boxes use para-virtualized drivers by default, when possible, for optimal performance.
-- Graphical/Desktop performance optimization wasn't a concern at all (sound is disabled, etc) as the
-  boxes are optimized for headless use. If you happen to have a desktop oriented use case just
-  [bug](https://github.com/AntonioMeireles/ClearLinux-packer/issues) the author.
+- Graphical/Desktop performance optimization wasn't a primary concern as the Author's primary
+  use case is towards headless use. Anyway, if you happen to have a desktop oriented use case and
+  something isn't working as you'd expect just fill a
+  [bug](https://github.com/AntonioMeireles/ClearLinux-packer/issues)!
 
 ## release schedule
 

@@ -42,6 +42,13 @@ Vagrant.configure(2) do |config|
       vmware.gui = !headless
       # FIXME: only way to behave past 24950 ...
       vmware.ssh_info_public = true
+
+      {
+        'cpuid.coresPerSocket' => '1',
+        'memsize' => '2048',
+        'numvcpus' => '2'
+      }.each { |k, v| vmware.vmx[k.to_s] = v.to_s }
+
       (0..7).each do |n|
         vmware.vmx["ethernet#{n}.virtualDev"] = 'vmxnet3'
       end
@@ -50,8 +57,14 @@ Vagrant.configure(2) do |config|
   config.vm.provider 'virtualbox' do |vbox|
     vbox.gui = !headless
     vbox.linked_clone = false
-    vbox.customize ['modifyvm', :id, '--audio', 'none']
-    vbox.customize ['modifyvm', :id, '--hwvirtex', 'on']
+
+    {
+      '--memory' => 2048,
+      '--vram' => 256,
+      '--cpus' => 2,
+      '--hwvirtex' => 'on'
+    }.each { |k, v| vbox.customize ['modifyvm', :id, k.to_s, v.to_s] }
+
     (1..8).each do |n|
       vbox.customize ['modifyvm', :id, "--nictype#{n}", 'virtio']
     end
@@ -75,6 +88,7 @@ Vagrant.configure(2) do |config|
     libvirt.nested = true
     libvirt.memory = 2048
     libvirt.cpus = 2
+    libvirt.video_vram = 256
   end
   if Vagrant.has_plugin?('vagrant-proxyconf')
     config.proxy.http = (ENV['http_proxy'] || ENV['HTTP_PROXY'])
