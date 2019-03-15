@@ -66,10 +66,6 @@ kernel-arguments: {
 }
 
 post-install:
-# FIXME: drop when https://github.com/clearlinux/clr-installer/issues/261 fixed
-# for imgs synthethisation we really *never* want the host net cfg to be copied ...
-- cmd: "rm -rf /etc/systemd/networkd"
-  chroot: true
 - cmd: "systemctl enable open-vm-tools"
   chroot: true
 - cmd: "systemctl mask tallow"
