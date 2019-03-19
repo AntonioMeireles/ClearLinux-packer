@@ -73,6 +73,8 @@ post-install:
   chroot: true
 - cmd: "systemctl mask docker"
   chroot: true
+- cmd: "systemctl mask clr-power clr-power.timer"
+  chroot: true
 - cmd: "systemctl enable systemd-timesyncd"
   chroot: true
 - cmd: "systemctl enable sshd.socket"
