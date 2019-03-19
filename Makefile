@@ -40,6 +40,13 @@ $(MEDIADIR)/OVMF.fd:
 	@mkdir -p $(MEDIADIR)
 	@curl -sSL $(CLR_BASE_URL)/image/OVMF.fd -o $(MEDIADIR)/OVMF.fd
 
+$(VIRTUALBOX_FACTORY).img:
+	@mkdir -p $(MEDIADIR)
+	# generating v$(VERSION) base image for virtualbox guests...
+	sed -e "s,^version:.*,version: $(VERSION)," builders/virtualbox.yml > builders/virtualbox.yml.$(VERSION)
+	sudo clr-installer --config builders/virtualbox.yml.$(VERSION) -l 4 -b installer:$(VIRTUALBOX_FACTORY).img
+	rm -rf builders/virtualbox.yml.$(VERSION)
+
 $(LIBVIRT_FACTORY).img:
 	@mkdir -p $(MEDIADIR)
 	# generating v$(VERSION) base image for libVirt guests...
@@ -47,11 +54,9 @@ $(LIBVIRT_FACTORY).img:
 	sudo clr-installer --config builders/libvirt.yml.$(VERSION) -l 4 -b installer:$(LIBVIRT_FACTORY).img
 	rm -rf builders/libvirt.yml.$(VERSION)
 
-$(VIRTUALBOX_FACTORY).vmdk: $(LIBVIRT_FACTORY).img
+$(VIRTUALBOX_FACTORY).vmdk: $(VIRTUALBOX_FACTORY).img
 		@mkdir -p $(MEDIADIR)
-		# for now we just reuse libvirt base image
-		# converting libvirt img to VMDK...
-		qemu-img convert $(LIBVIRT_FACTORY).img -O vmdk $(VIRTUALBOX_FACTORY).vmdk
+		qemu-img convert $(VIRTUALBOX_FACTORY).img -O vmdk $(VIRTUALBOX_FACTORY).vmdk
 
 $(VIRTUALBOX_FACTORY)/$(NV).ova: $(VIRTUALBOX_FACTORY).vmdk
 	@mkdir -p $(VIRTUALBOX_FACTORY)
