@@ -42,6 +42,7 @@ bundles:
 - os-core-update
 - openssh-server
 - os-cloudguest
+- qemu-guest-additions
 - sysadmin-basic
 - network-basic
 - vim
@@ -71,6 +72,8 @@ post-install:
 - cmd: "systemctl mask docker"
   chroot: true
 - cmd: "systemctl enable systemd-timesyncd"
+  chroot: true
+- cmd: "systemctl enable qemu-guest-agent"
   chroot: true
 - cmd: "systemctl enable sshd.socket"
   chroot: true
