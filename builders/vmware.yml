@@ -50,6 +50,7 @@ bundles:
 - containers-basic
 - patch
 - diffutils
+- hardware-uefi
 
 autoUpdate: false
 postArchive: true
