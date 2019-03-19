@@ -89,6 +89,9 @@ Vagrant.configure(2) do |config|
     libvirt.memory = 2048
     libvirt.cpus = 2
     libvirt.video_vram = 256
+    libvirt.channel target_name: 'org.qemu.guest_agent.0',
+                    type: 'unix',
+                    target_type: 'virtio'
   end
   if Vagrant.has_plugin?('vagrant-proxyconf')
     config.proxy.http = (ENV['http_proxy'] || ENV['HTTP_PROXY'])
