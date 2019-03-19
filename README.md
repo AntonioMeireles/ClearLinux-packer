@@ -43,10 +43,10 @@ vagrant up
 
 - By default boxes are loaded in _headless_ mode.
 
-  When using Virtualbox or VMware if you wish to have access to the boot console you can boot them
+  When using **Virtualbox** or **VMware** if you wish to have access to the boot console you can boot them
   in graphical mode by invoking `vagrant` with `HEADLESS=false` set in your environment.
-- if you want to consume additional Vagrant plugins from your *Vagrantfile* the prefered way to do it
-  is along the snippet bellow...
+- if you want to consume additional **Vagrant** plugins from your *Vagrantfile* the preferred way to
+   do it is along the snippet bellow...
 
   ```ruby
   additional_plugins = {
@@ -64,10 +64,10 @@ vagrant up
   ...
   ```
 
-- the available Clear Linux boxes ship with a default timezone set unlikely
-  to suit everyone (Author's one `Portugal` *aka* `Europe/Lisbon`).
+- the available **Clear Linux** boxes ship with a default timezone set unlikely to suit everyone,
+  as the default is **`Europe/Lisbon`**, since the Author is based in **Porto**, **Portugal**.
 
-  Here's how to programatically set your own one straight from the `Vagrantfile`:
+  Here's how to programmatically set your own one straight from the `Vagrantfile`:
 
   ```ruby
   config.vm.provision :set_timezone, timezone: 'Asia/Dili'
@@ -81,10 +81,19 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
 ## What else do you need to know?
 
 - **All** boxes use para-virtualized drivers by default, when possible, for optimal performance.
-- Graphical/Desktop performance optimization wasn't a primary concern as the Author's primary
-  use case is towards headless use. Anyway, if you happen to have a desktop oriented use case and
-  something isn't working as you'd expect just fill a
-  [bug](https://github.com/AntonioMeireles/ClearLinux-packer/issues)!
+- Graphical/Desktop performance optimization wasn't originally a primary concern as the Author's
+  primary use case was towards headless use.
+
+  Things changed, as the user base increased and spoken, and now desktop focused user cases are
+  first class citizens too.
+  > inside [`extras/gnome-desktop`](./extras/gnome-desktop/) is a sample
+  > [`Vagrantfile`](./extras/gnome-desktop/Vagrantfile) that will fully setup and boot
+  > **[Gnome Desktop](https://www.gnome.org)** on top of **Clear Linux**.
+  >
+  > - the default password of the default user (`clearlinux`) is `V@grant!`
+
+  So, if you happen to have a desktop oriented use case and something isn't still working as you'd
+  expect just [tell](https://github.com/AntonioMeireles/ClearLinux-packer/issues)!
 
 ## release schedule
 
