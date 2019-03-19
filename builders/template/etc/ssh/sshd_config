@@ -4,3 +4,7 @@ PermitEmptyPasswords no
 PasswordAuthentication no
 PermitRootLogin no
 AuthorizedKeysFile %h/.ssh/authorized_keys
+
+# 120s/60m
+ClientAliveInterval 120
+ClientAliveCountMax 30
