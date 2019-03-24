@@ -40,8 +40,6 @@ Vagrant.configure(2) do |config|
     config.vm.provider(vmware_provider) do |vmware|
       vmware.whitelist_verified = true
       vmware.gui = !headless
-      # FIXME: only way to behave past 24950 ...
-      vmware.ssh_info_public = true
 
       {
         'cpuid.coresPerSocket' => '1',

@@ -8,3 +8,7 @@ AuthorizedKeysFile %h/.ssh/authorized_keys
 # 120s/60m
 ClientAliveInterval 120
 ClientAliveCountMax 30
+
+# XXX: workaround for https://github.com/hashicorp/vagrant/issues/10730
+# drop when fixed
+IPQoS lowdelay throughput
