@@ -25,7 +25,6 @@ exec "vagrant #{ARGV.join(' ')}" if need_restart
 
 Vagrant.configure(2) do |config|
   headless = ENV['HEADLESS'] || true
-  OVMF = File.join(File.dirname(__FILE__), 'OVMF.fd').freeze
   name = 'clearlinux'
 
   config.vm.hostname = name.to_s
@@ -67,20 +66,8 @@ Vagrant.configure(2) do |config|
       vbox.customize ['modifyvm', :id, "--nictype#{n}", 'virtio']
     end
   end
-  config.vm.provider 'libvirt' do |libvirt, override|
-    override.trigger.before :provision, :up, :resume do |req|
-      req.info = "Checking 'OVMF.fd' availability"
-      req.run = {
-        # the 'mkdir' bellow is needed otherwise using remote libvirt hosts will
-        # fail. OTOH if talking to a remote libvirt host you'll need to reset
-        # 'libvirt.loader' to whatever is the location of the UEFI firmware on
-        # that host... in a ClearLinux host running libvirt that would be along:
-        # "libvirt.loader = '/usr/share/qemu/OVMF.fd"
-        inline: "bash -c '[[ -f #{OVMF} ]] || ( mkdir -p $(dirname #{OVMF}) && \
-          curl https://download.clearlinux.org/image/OVMF.fd -o #{OVMF} )'"
-      }
-    end
-    libvirt.loader = OVMF
+  config.vm.provider 'libvirt' do |libvirt|
+    libvirt.loader = File.join(File.dirname(__FILE__), 'OVMF.fd')
     libvirt.driver = 'kvm'
     libvirt.cpu_mode = 'host-passthrough'
     libvirt.nested = true

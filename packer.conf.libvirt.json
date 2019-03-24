@@ -64,7 +64,8 @@
 				"compression_level": 9,
 				"vagrantfile_template": "Vagrantfile.template.rb",
 				"include": [
-					"info.json"
+					"info.json",
+					"media/OVMF.fd"
 				]
 			}
 		]
