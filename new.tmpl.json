@@ -1,6 +1,6 @@
 {
 	"version": {
 		"version": "${VERSION}",
-		"description": "\n\n---\n\n#### **release notes** - https://download.clearlinux.org/releases/${VERSION}/clear/RELEASENOTES\n---\nbuilt with **[ClearLinux-packer](https://github.com/AntonioMeireles/ClearLinux-packer)** -**[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)** is welcome!\n"
+		"description": "\n\n---\n\n#### **release notes** - https://download.clearlinux.org/releases/${VERSION}/clear/RELEASENOTES\n---\nbuilt with **[ClearLinux-packer](https://github.com/AntonioMeireles/ClearLinux-packer)** - **[feedback](https://github.com/AntonioMeireles/ClearLinux-packer/issues)** is welcome!\n"
 	}
 }
