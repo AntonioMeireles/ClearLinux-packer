@@ -1,6 +1,9 @@
 {
 	"variables": {
-		"cloud_token": "{{ env `VAGRANT_CLOUD_TOKEN` }}"
+		"cloud_token": "{{ env `VAGRANT_CLOUD_TOKEN` }}",
+		"version": "{{  env `VERSION` }}",
+		"name": "{{ env `BOX_NAME` }}",
+		"box_tag": "{{ env `REPOSITORY` }}"
 	},
 	"builders": [
 		{

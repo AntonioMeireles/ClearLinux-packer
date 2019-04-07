@@ -1,210 +1,201 @@
 .DEFAULT_GOAL := help
+.EXPORT_ALL_VARIABLES:
+
+PROVIDERS := libvirt vmware virtualbox
 
 BOX_NAME := ClearLinux
 OWNER ?= AntonioMeireles
 REPOSITORY := $(OWNER)/$(BOX_NAME)
-
 VERSION ?= $(shell curl -Ls $(CLR_BASE_URL)/latest)
+
 CLR_BASE_URL := https://download.clearlinux.org
 CLR_RELEASE_URL := $(CLR_BASE_URL)/releases/$(VERSION)/clear
-BUILD_ID ?= $(shell date -u '+%Y-%m-%d-%H%M')
+
 NV := $(BOX_NAME)-$(VERSION)
+OSV := clear-$(VERSION)
 
-SEED_PREFIX = clear-$(VERSION)
+VAGRANT_REPO := https://app.vagrantup.com/api/v1/box/$(REPOSITORY)
 
-VB_GA ?= $(shell curl -Ls http://download.virtualbox.org/virtualbox/LATEST.TXT)
+define mediaFactory
+media/$(OSV)-$1-factory
+endef
 
-MEDIADIR := media
-BOXDIR := boxes
-PWD := `pwd`
+define VMDKtarget
+ifneq ($T,libvirt)
+media/$(OSV)-$T-factory.vmdk:  media/$(OSV)-$T-factory.img
+	$(call imgToVMDK,$T)
+endif
+endef
 
-VMWARE_FACTORY := $(MEDIADIR)/$(SEED_PREFIX)-vmware-factory
-VIRTUALBOX_FACTORY := $(MEDIADIR)/$(SEED_PREFIX)-virtualbox-factory
-LIBVIRT_FACTORY := $(MEDIADIR)/$(SEED_PREFIX)-libvirt-factory
+define IMGtarget
+media/$(OSV)-$T-factory.img:
+	$(call buildBaseImg,$T)
+endef
 
-VAGRANT_REPO = https://app.vagrantup.com/api/v1/box/$(REPOSITORY)
+define PROVIDERtarget
+$T: boxes/$T/$(NV).$T.box
+endef
+
+define UploadBoxTarget
+.PHONY: upload-$T-box
+upload-$T-box: boxes/$T/$(NV).$T.box
+	$(call boxUpload,$T)
+endef
+
+define smokeTESTtarget
+.PHONY: test-$T
+test-$T: boxes/$T/$(NV).$T.box
+	$(call boxSmokeTest,$T)
+endef
+
+define targetConfig
+builders/$1.yml.$(VERSION)
+endef
+
+define buildBaseImg
+	@mkdir -p media
+	@echo "- assembling v$(VERSION) base img for $1 guests..."
+
+	sed -e "s,^version:.*,version: $(VERSION)," builders/$1.yml > $(targetConfig)
+	sudo clr-installer --config $(targetConfig) -l 4 -b installer:media/$(OSV)-$1-factory.img
+
+	rm -rf $(targetConfig)
+endef
+
+define imgToVMDK
+	qemu-img convert media/$(OSV)-$1-factory.img -O vmdk media/$(OSV)-$1-factory.vmdk
+endef
+
+define vmxBuilder
+	@mkdir -p media/$(OSV)-$1-factory
+	@for f in virtualbox.vmx vmware.vmx vmxf vmsd plist; do                                           \
+		cp template/$(BOX_NAME).$$f.tmpl media/$(OSV)-$1-factory/$(NV).$$f; done
+
+	@cp media/$(OSV)-$1-factory/$(NV).$1.vmx media/$(OSV)-$1-factory/$(NV).vmx
+
+	@pushd media/$(OSV)-$1-factory && sed -i "s,VERSION,$(VERSION)," $(BOX_NAME)-* && popd
+
+	@ln -sf ../$(OSV)-$1-factory.vmdk media/$(OSV)-$1-factory/
+
+	@pushd media/$(OSV)-$1-factory && sed -i "s,VMDK_SIZE,$$( stat --printf="%s" ../$(OSV)-$1-factory.vmdk)," $(BOX_NAME)-* && popd
+endef
+
+define pack
+	packer build -force -only=$(strip $(builder)) packer.conf.$1.json
+endef
+
+define builder
+$(if $(filter $1,libvirt),qemu,)
+$(if $(filter $1,vmware),vmware-vmx,)
+$(if $(filter $1,virtualbox),virtualbox-ovf,)
+endef
+
+define provider
+$(if $(filter $1,vmware),vmware_desktop,$1)
+endef
+
+define boxSmokeTest
+	vagrant box add --name clear-test --provider $(strip $(provider)) boxes/$1/$(NV).$1.box --force
+	@pushd extras/test;                                                                        \
+	vagrant up --provider $(strip $(provider)) ;                                              \
+	vagrant ssh -c "w; sudo swupd info" && echo "- $1 box (v$(VERSION)) looks OK" || exit 1; \
+	vagrant halt -f ;                                                                       \
+	vagrant destroy -f;                                                                    \
+	vagrant box remove clear-test --provider $(strip $(provider));                        \
+	popd
+endef
+
+define authBearer
+--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}"
+endef
+
+define isJson
+--header "Content-Type: application/json"
+endef
+
+define boxUpload
+	@echo "- '$(OWNER)/$(BOX_NAME)/$(VERSION)/$1' uploading..."
+	@curl `curl -s $(authBearer) $(VAGRANT_REPO)/version/${VERSION}/provider/$(if $(filter $1, vmware),vmware_desktop,$1)/upload | jq .upload_path | tr -d \"` \
+		--upload-file boxes/$1/$(NV).$1.box && echo "- '$(OWNER)/$(BOX_NAME)/$(VERSION)/$1' uploaded"
+endef
+
+define addProviderToRelease
+	curl -s $(isJson) $(authBearer) $(VAGRANT_REPO)/version/${VERSION}/providers \
+		--data '{"provider": {"name": "$(if $(filter $1,vmware),vmware_desktop,$1)"}}' && \
+		echo "- added '$1' provider to '$(OWNER)/$(BOX_NAME)/$(VERSION)'"
+endef
 
 .PHONY: help
 help:
+	@echo
+	@echo "the following PROVIDERS are currently available: \033[36m$(PROVIDERS)\033[0m"
+	@echo
 	@echo "available 'make' targets:"
 	@echo
 	@grep -E "^.*:.*?## .*$$" $(MAKEFILE_LIST) | grep -vE "(grep|BEGIN)" | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\t\033[36m%-30s\033[0m %s\n", $$1, $$2}' | \
-		VERSION=$(VERSION) envsubst
+		envsubst
 	@echo
-	@echo "By default the target VERSION is the 'latest' one, currently $(VERSION)"
+	@echo "By default the target VERSION is the 'latest' one, currently at $(VERSION)"
 	@echo "To target a specific one add 'VERSION=...' to your make invocation"
 	@echo
 
-$(MEDIADIR)/OVMF.fd:
-	@mkdir -p $(MEDIADIR)
-	@curl -sSL $(CLR_BASE_URL)/image/OVMF.fd -o $(MEDIADIR)/OVMF.fd
+media/OVMF.fd:
+	@mkdir -p media
+	@curl -sSL $(CLR_BASE_URL)/image/OVMF.fd -o media/OVMF.fd
 
-$(VIRTUALBOX_FACTORY).img:
-	@mkdir -p $(MEDIADIR)
-	# generating v$(VERSION) base image for virtualbox guests...
-	sed -e "s,^version:.*,version: $(VERSION)," builders/virtualbox.yml > builders/virtualbox.yml.$(VERSION)
-	sudo clr-installer --config builders/virtualbox.yml.$(VERSION) -l 4 -b installer:$(VIRTUALBOX_FACTORY).img
-	rm -rf builders/virtualbox.yml.$(VERSION)
+$(foreach T,$(PROVIDERS),$(eval $(IMGtarget)))
 
-$(LIBVIRT_FACTORY).img:
-	@mkdir -p $(MEDIADIR)
-	# generating v$(VERSION) base image for libVirt guests...
-	sed -e "s,^version:.*,version: $(VERSION)," builders/libvirt.yml > builders/libvirt.yml.$(VERSION)
-	sudo clr-installer --config builders/libvirt.yml.$(VERSION) -l 4 -b installer:$(LIBVIRT_FACTORY).img
-	rm -rf builders/libvirt.yml.$(VERSION)
+$(foreach T,$(PROVIDERS),$(eval $(VMDKtarget)))
 
-$(VIRTUALBOX_FACTORY).vmdk: $(VIRTUALBOX_FACTORY).img
-		@mkdir -p $(MEDIADIR)
-		qemu-img convert $(VIRTUALBOX_FACTORY).img -O vmdk $(VIRTUALBOX_FACTORY).vmdk
-
-$(VIRTUALBOX_FACTORY)/$(NV).ova: $(VIRTUALBOX_FACTORY).vmdk
-	@mkdir -p $(VIRTUALBOX_FACTORY)
+$(call mediaFactory,virtualbox)/$(NV).ova: $(call mediaFactory,virtualbox).vmdk
 	# synthethising VirtualBox OVA
-	@for f in pv.vmx vmx vmxf vmsd plist; do                                           \
-		cp template/$(BOX_NAME).$$f.tmpl $(VIRTUALBOX_FACTORY)/$(NV).$$f; done
-
-	@pushd $(VIRTUALBOX_FACTORY) && sed -i "s,VERSION,$(VERSION)," $(BOX_NAME)-* && popd
-
-	@ln -sf ../$(SEED_PREFIX)-virtualbox-factory.vmdk $(VIRTUALBOX_FACTORY)/
-
-	@pushd $(VIRTUALBOX_FACTORY) && sed -i "s,VMDK_SIZE,$$( stat --printf="%s" ../$(SEED_PREFIX)-virtualbox-factory.vmdk)," $(BOX_NAME)-* && popd
-
-	ovftool $(VIRTUALBOX_FACTORY)/$(NV).vmx $(VIRTUALBOX_FACTORY)/$(NV).ova
+	$(call vmxBuilder,virtualbox)
+	ovftool $(call mediaFactory,virtualbox)/$(NV).vmx $(call mediaFactory,virtualbox)/$(NV).ova
 	# VirtualBox VM (OVA) syntethised from vmdk
 
-$(VMWARE_FACTORY).vmdk:
-		@mkdir -p $(MEDIADIR)
-		# generating v$(VERSION) base image for VMware guests...
-		sed -e "s,^version:.*,version: $(VERSION)," builders/vmware.yml > builders/vmware.yml.$(VERSION)
-		sudo clr-installer --config builders/vmware.yml.$(VERSION) -l 4 -b installer:$(VMWARE_FACTORY).img
-		rm -rf builders/vmware.yml.$(VERSION)
-		# finally, converting to VMDK...
-		qemu-img convert $(VMWARE_FACTORY).img -O vmdk $(VMWARE_FACTORY).vmdk
-
-$(VMWARE_FACTORY)/$(NV).vmx: $(VMWARE_FACTORY).vmdk
-	@mkdir -p $(VMWARE_FACTORY)
-
-	@for f in pv.vmx vmx vmxf vmsd plist; do                                           \
-		cp template/$(BOX_NAME).$$f.tmpl $(VMWARE_FACTORY)/$(NV).$$f; done
-
-	@cp $(VMWARE_FACTORY)/$(NV).pv.vmx $(VMWARE_FACTORY)/$(NV).vmx
-
-	pushd $(VMWARE_FACTORY) && sed -i "s,VERSION,$(VERSION)," $(BOX_NAME)-* && popd
-
-	@ln -sf ../$(SEED_PREFIX)-vmware-factory.vmdk $(VMWARE_FACTORY)/
-
-	pushd $(VMWARE_FACTORY) && sed -i "s,VMDK_SIZE,$$( stat --printf="%s" ../$(SEED_PREFIX)-vmware-factory.vmdk)," $(BOX_NAME)-* && popd
-
+$(call mediaFactory,vmware)/$(NV).vmx: $(call mediaFactory,vmware).vmdk
+	# synthethising VMware VM
+	$(call vmxBuilder,vmware)
 	# vmware fusion VM (v$(VERSION)) syntetised from vmdk
 
-.PHONY: $(MEDIADIR)/vmware
-$(MEDIADIR)/vmware: $(VMWARE_FACTORY)/$(NV).vmx
+.PHONY: media $(foreach p,$(PROVIDERS),media/$(p))
+media: $(foreach p,$(PROVIDERS),media/$(p))  ## Media Fetcher  Assembles locally all media needed by Packer
+media/vmware: $(call mediaFactory,vmware)/$(NV).vmx
+media/libvirt: $(call mediaFactory,libvirt).img
+media/virtualbox: $(call mediaFactory,virtualbox).vmdk
 
-.PHONY: $(MEDIADIR)/libvirt
-$(MEDIADIR)/libvirt: $(LIBVIRT_FACTORY).img
+.PHONY: all $(PROVIDERS) release upload publish clean
+all: $(PROVIDERS) ## Packer Builds  All providers boxes
 
-.PHONY: $(MEDIADIR)/virtualbox
-$(MEDIADIR)/virtualbox: $(VIRTUALBOX_FACTORY).vmdk
+$(foreach T,$(PROVIDERS),$(eval $(PROVIDERtarget)))
 
-.PHONY: media
-media: $(VMWARE_FACTORY)/$(NV).vmx $(LIBVIRT_FACTORY).img $(VIRTUALBOX_FACTORY).vmdk  ## Base Builder   Assembles all media needed to pack the boxes
+boxes/libvirt/$(NV).libvirt.box: $(call mediaFactory,libvirt).img media/OVMF.fd
+	$(call pack,libvirt)
 
-.PHONY: all virtualbox vmware libvirt
-all: virtualbox vmware libvirt ## Packer Build   All box flavors
+boxes/virtualbox/$(NV).virtualbox.box: $(call mediaFactory,virtualbox)/$(NV).ova
+	$(call pack,virtualbox)
 
-virtualbox: $(BOXDIR)/virtualbox/$(NV).virtualbox.box ## Packer Build   VirtualBox
+boxes/vmware/$(NV).vmware.box: $(call mediaFactory,vmware)/$(NV).vmx
+	$(call pack,vmware)
 
-vmware: $(BOXDIR)/vmware/$(NV).vmware.box ## Packer Build   VMware
+release: ## Vagrant Cloud  Create a new release
+	( cat new.tmpl.json | envsubst | curl --silent $(isJson) $(authBearer) $(VAGRANT_REPO)/versions \
+		--data-binary @- ) && echo "- '$(OWNER)/$(BOX_NAME)/$(VERSION)' release created on Vagrant Cloud"
+	$(call addProviderToRelease,libvirt)
+	$(call addProviderToRelease,vmware)
+	$(call addProviderToRelease,virtualbox)
 
-libvirt: $(BOXDIR)/libvirt/$(NV).libvirt.box ## Packer Build   LibVirt
+upload: $(foreach p,$(PROVIDERS),upload-$(p)-box) ## Vagrant Cloud  Uploads all built boxes for version
 
-$(BOXDIR)/libvirt/$(NV).libvirt.box: $(LIBVIRT_FACTORY).img $(MEDIADIR)/OVMF.fd
-	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" -only=qemu packer.conf.libvirt.json
-
-$(BOXDIR)/virtualbox/$(NV).virtualbox.box: $(VIRTUALBOX_FACTORY)/$(NV).ova
-	packer build -force -var "name=$(BOX_NAME)" -var "vb_ga=$(VB_GA)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" -only=virtualbox-ovf packer.conf.virtualbox.json
-
-$(BOXDIR)/vmware/$(NV).vmware.box: $(VMWARE_FACTORY)/$(NV).vmx
-	packer build -force -var "name=$(BOX_NAME)" -var "version=$(VERSION)" -var "box_tag=$(REPOSITORY)" -only=vmware-vmx packer.conf.vmware.json
-
-.PHONY: release
-release: ## Vagrant Cloud  create a new release
-	( cat new.tmpl.json | envsubst | curl --silent --header "Content-Type: application/json" \
-		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" $(VAGRANT_REPO)/versions      \
-		--data-binary @- ) && echo "created release $(VERSION) on Vagrant Cloud"
-	curl --header "Content-Type: application/json" \
-		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
-		$(VAGRANT_REPO)/version/${VERSION}/providers \
-		--data '{"provider": {"name": "virtualbox"}}'
-	curl --header "Content-Type: application/json" \
-		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
-		$(VAGRANT_REPO)/version/${VERSION}/providers \
-		--data '{"provider": {"name": "vmware_desktop"}}'
-	curl --header "Content-Type: application/json" \
-		--header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
-		$(VAGRANT_REPO)/version/${VERSION}/providers \
-		--data '{"provider": {"name": "libvirt"}}'
-
-.PHONY: upload-libvirt-box
-upload-libvirt-box: $(BOXDIR)/libvirt/$(NV).libvirt.box ## Vagrant Cloud  LibVirt upload
-	@curl $$(curl -s --header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
-		$(VAGRANT_REPO)/version/${VERSION}/provider/libvirt/upload | jq .upload_path | tr -d \") \
-		--upload-file $(BOXDIR)/libvirt/$(NV).libvirt.box && echo "LibVirt box (v$(VERSION)) uploaded"
-
-.PHONY: upload-virtualbox-box
-upload-virtualbox-box: $(BOXDIR)/virtualbox/$(NV).virtualbox.box ## Vagrant Cloud  VirtualBox upload
-	@curl $$(curl -s --header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
-		$(VAGRANT_REPO)/version/${VERSION}/provider/virtualbox/upload | jq .upload_path | tr -d \") \
-		--upload-file $(BOXDIR)/virtualbox/$(NV).virtualbox.box && echo "VirtualBox box (v$(VERSION)) uploaded"
-
-.PHONY: upload-vmware-box
-upload-vmware-box: $(BOXDIR)/vmware/$(NV).vmware.box ## Vagrant Cloud  VMware upload
-	@curl $$(curl -s --header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
-		$(VAGRANT_REPO)/version/${VERSION}/provider/vmware_desktop/upload | jq .upload_path | tr -d \") \
-		--upload-file $(BOXDIR)/vmware/$(NV).vmware.box && echo "VMware box (v$(VERSION)) uploaded"
-
-.PHONY: upload-all publish
-upload-all: upload-virtualbox-box upload-libvirt-box upload-vmware-box ## Vagrant Cloud  Uploads all built boxes
+$(foreach T,$(PROVIDERS),$(eval $(UploadBoxTarget)))
 
 publish: ## Vagrant Cloud  make uploaded boxes public
-	@curl --silent --header "Authorization: Bearer ${VAGRANT_CLOUD_TOKEN}" \
-		$(VAGRANT_REPO)/version/$(VERSION)/release --request PUT | jq .
+	@curl --silent $(authBearer) $(VAGRANT_REPO)/version/$(VERSION)/release --request PUT | jq .
 
-.PHONY: test-vmware test-virtualbox test-libvirt
-test-vmware: $(BOXDIR)/vmware/$(NV).vmware.box ## Smoke Testing  VMware
-	@vagrant box add --name clear-test --provider vmware_desktop $(BOXDIR)/vmware/$(NV).vmware.box --force
-	@pushd extras/test;                                                                            \
-	vagrant up --provider vmware_desktop ;                                                        \
-	vagrant ssh -c "w; sudo swupd info" && echo "- VMware box (v$(VERSION)) looks OK" || exit 1; \
-	vagrant halt -f ;                                                                           \
-	vagrant destroy -f;                                                                        \
-	vagrant box remove clear-test --provider vmware_desktop;                                 \
-	popd
+$(foreach T,$(PROVIDERS),$(eval $(smokeTESTtarget)))
 
-test-virtualbox: $(BOXDIR)/virtualbox/$(NV).virtualbox.box ## Smoke Testing  VirtualBox
-	@vagrant box add --name clear-test --provider virtualbox $(BOXDIR)/virtualbox/$(NV).virtualbox.box --force
-	@pushd extras/test;                                                                                \
-	vagrant up --provider virtualbox ;                                                                \
-	vagrant ssh -c "w; sudo swupd info" && echo "- Virtualbox box (v$(VERSION)) looks OK" || exit 1; \
-	vagrant halt -f ;                                                                               \
-	vagrant destroy -f;                                                                            \
-	vagrant box remove clear-test --provider virtualbox;                                          \
-	popd
-
-test-libvirt: $(BOXDIR)/libvirt/$(NV).libvirt.box ## Smoke Testing  LibVirt
-	@vagrant box add --name clear-test --provider libvirt $(BOXDIR)/libvirt/$(NV).libvirt.box --force
-	@pushd extras/test;                                                                             \
-	vagrant up --provider libvirt ;                                                                \
-	vagrant ssh -c "w; sudo swupd info" && echo "- Libvirt box (v$(VERSION)) looks OK" || exit 1; \
-	vagrant halt -f ;                                                                            \
-	vagrant destroy -f;                                                                         \
-	vagrant box remove clear-test --provider libvirt;                                          \
-	popd
-	ssh clear@libvirt-host.clearlinux.local "sudo virsh vol-delete clear-test_vagrant_box_image_0.img default"
-
-.PHONY: clean
-clean: # does what it says ...
-	rm -rf $(MEDIADIR)/* $(BOXDIR)/* packer_cache
+clean: ## frees space
+	rm -rf media/* boxes/* packer_cache/*
 
 
