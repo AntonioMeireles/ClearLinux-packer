@@ -6,3 +6,4 @@ output-vmware-vmx/
 packer_cache
 tests
 .DS_Store
+builders/*.yml.*
