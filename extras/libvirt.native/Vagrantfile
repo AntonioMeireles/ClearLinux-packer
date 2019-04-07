@@ -29,8 +29,11 @@ Vagrant.configure(2) do |config|
                             'actimeo=2',
                             'nfsvers=3',
                             'noatime',
+                            'nolock',
                             'nocto',
                             'noacl',
+                            'intr',
+                            'soft',
                             'tcp',
                             'rw'
                           ]
