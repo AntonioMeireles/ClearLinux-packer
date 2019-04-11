@@ -63,7 +63,7 @@ define buildBaseImg
 endef
 
 define imgToVMDK
-	qemu-img convert media/$(OSV)-$1-factory.img -O vmdk media/$(OSV)-$1-factory.vmdk
+	qemu-img convert -p -C -t none -T none media/$(OSV)-$1-factory.img -O vmdk media/$(OSV)-$1-factory.vmdk
 endef
 
 define vmxBuilder
