@@ -17,7 +17,7 @@ chmod g+rwx /var/lib/libvirt/{isos,images}/
 
 echo 'export LIBVIRT_DEFAULT_URI="qemu:///system"' > /etc/profile.d/libvirt.conf
 
-PACKER_VERSION=1.3.5
+PACKER_VERSION=1.4.0
 PACKER_ZIP=packer_${PACKER_VERSION}_linux_amd64.zip
 PACKER_URL=https://releases.hashicorp.com/packer/${PACKER_VERSION}/${PACKER_ZIP}
 
