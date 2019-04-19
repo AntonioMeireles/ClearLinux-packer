@@ -46,6 +46,7 @@ define smokeTESTtarget
 .PHONY: test-$T
 test-$T: boxes/$T/$(NV).$T.box
 	$(call boxSmokeTest,$T)
+	$(if $(filter $T,libvirt),ssh clear@libvirt-host.clearlinux.local sudo virsh vol-delete clear-test_vagrant_box_image_0.img default,)
 endef
 
 define targetConfig
