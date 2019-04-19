@@ -24,7 +24,7 @@
 			"qemuargs": [
 				[
 					"-bios",
-					"media/OVMF.fd"
+					"/usr/share/qemu/OVMF.fd"
 				]
 			],
 			"iso_checksum_type": "none",
@@ -67,8 +67,7 @@
 				"compression_level": 9,
 				"vagrantfile_template": "Vagrantfile.template.rb",
 				"include": [
-					"info.json",
-					"media/OVMF.fd"
+					"info.json"
 				]
 			}
 		]

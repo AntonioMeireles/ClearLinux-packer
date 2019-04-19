@@ -64,7 +64,7 @@ define buildBaseImg
 endef
 
 define imgToVMDK
-	qemu-img convert -p -C -t none -T none media/$(OSV)-$1-factory.img -O vmdk media/$(OSV)-$1-factory.vmdk
+	qemu-img convert -p -C media/$(OSV)-$1-factory.img -O vmdk media/$(OSV)-$1-factory.vmdk
 endef
 
 define vmxBuilder
@@ -141,10 +141,6 @@ help:
 	@echo "To target a specific one add 'VERSION=...' to your make invocation"
 	@echo
 
-media/OVMF.fd:
-	@mkdir -p media
-	@curl -sSL $(CLR_BASE_URL)/image/OVMF.fd -o media/OVMF.fd
-
 $(foreach T,$(PROVIDERS),$(eval $(IMGtarget)))
 
 $(foreach T,$(PROVIDERS),$(eval $(VMDKtarget)))
@@ -171,7 +167,7 @@ all: $(PROVIDERS) ## Packer Builds  All providers boxes
 
 $(foreach T,$(PROVIDERS),$(eval $(PROVIDERtarget)))
 
-boxes/libvirt/$(NV).libvirt.box: $(call mediaFactory,libvirt).img media/OVMF.fd
+boxes/libvirt/$(NV).libvirt.box: $(call mediaFactory,libvirt).img
 	$(call pack,libvirt)
 
 boxes/virtualbox/$(NV).virtualbox.box: $(call mediaFactory,virtualbox)/$(NV).ova

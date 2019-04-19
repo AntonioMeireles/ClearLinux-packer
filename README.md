@@ -73,6 +73,18 @@ vagrant up
   config.vm.provision :set_timezone, timezone: 'Asia/Dili'
   ```
 
+- The boxes expect the UEFI bios to be found on the host filesystem, where libvirt sits, at
+  `/usr/share/qemu/OVMF.fd` which is its canonical location on major OSs.
+
+  If you are consuming the boxes over a OS that has `OVMF.fd` placed elsewhere please adapt your
+  `Vagrantfile` accordingly:
+
+  ```ruby
+  config.vm.provider :libvirt do |libvirt, override|
+    libvirt.loader = '/NON_DEFAULT_LOCATION/OVMF.fd'
+  end
+  ```
+
 ## Vagrant Cloud
 
 This project Vagrant boxes are hosted on **Vagrant Cloud** at

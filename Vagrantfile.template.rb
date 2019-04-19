@@ -14,8 +14,7 @@ unless ['plugin'].include? ARGV[0]
   ].each do |plugin|
     next if Vagrant.has_plugin?(plugin[:name], plugin[:version])
 
-    verb = 'install'
-    verb = 'update' if Vagrant.has_plugin?(plugin[:name])
+    verb = Vagrant.has_plugin?(plugin[:name]) ? 'update' : 'install'
     system("vagrant plugin #{verb} #{plugin[:name]}", chdir: '/tmp') || exit!
     need_restart = true
   end
@@ -67,7 +66,8 @@ Vagrant.configure(2) do |config|
     end
   end
   config.vm.provider 'libvirt' do |libvirt|
-    libvirt.loader = File.join(File.dirname(__FILE__), 'OVMF.fd')
+    # XXX: this is the default location in ClearLinux and Debian
+    libvirt.loader = "/usr/share/qemu/OVMF.fd"
     libvirt.driver = 'kvm'
     libvirt.cpu_mode = 'host-passthrough'
     libvirt.nested = true
