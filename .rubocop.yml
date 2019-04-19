@@ -1,8 +1,10 @@
 Metrics/BlockLength:
   Exclude:
-    - 'Rakefile'
-    - '**/*.rake'
-    - 'test/**/*.rb'
-    - '**/Vagrantfile'
-    - 'Vagrantfile.template.rb'
-
+  - 'Rakefile'
+  - '**/*.rake'
+  - 'test/**/*.rb'
+  - '**/Vagrantfile'
+  - 'Vagrantfile.template.rb'
+Naming/FileName:
+  Exclude:
+  - 'Vagrantfile.template.rb'
