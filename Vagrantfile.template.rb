@@ -67,7 +67,7 @@ Vagrant.configure(2) do |config|
   end
   config.vm.provider 'libvirt' do |libvirt|
     # XXX: this is the default location in ClearLinux and Debian
-    libvirt.loader = "/usr/share/qemu/OVMF.fd"
+    libvirt.loader = '/usr/share/qemu/OVMF.fd'
     libvirt.driver = 'kvm'
     libvirt.cpu_mode = 'host-passthrough'
     libvirt.nested = true
