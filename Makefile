@@ -16,13 +16,21 @@ OSV := clear-$(VERSION)
 
 VAGRANT_REPO := https://app.vagrantup.com/api/v1/box/$(REPOSITORY)
 
+UNAME := $(shell uname)
+LIBVIRT_HOST ?= libvirt-host.clearlinux.local
+LIBVIRT_CONNECT :=
+
+ifneq ($(UNAME),Linux)
+	LIBVIRT_CONNECT := ssh clear@$(LIBVIRT_HOST)
+endif
+
 define mediaFactory
 media/$(OSV)-$1-factory
 endef
 
 define VMDKtarget
 ifneq ($T,libvirt)
-media/$(OSV)-$T-factory.vmdk:  media/$(OSV)-$T-factory.img
+media/$(OSV)-$T-factory.vmdk: media/$(OSV)-$T-factory.img
 	$(call imgToVMDK,$T)
 endif
 endef
@@ -46,7 +54,7 @@ define smokeTESTtarget
 .PHONY: test-$T
 test-$T: boxes/$T/$(NV).$T.box
 	$(call boxSmokeTest,$T)
-	$(if $(filter $T,libvirt),ssh clear@libvirt-host.clearlinux.local sudo virsh vol-delete clear-test_vagrant_box_image_0.img default,)
+	$(if $(filter $T,libvirt),$(LIBVIRT_CONNECT) sudo virsh vol-delete clear-test_vagrant_box_image_0.img default,)
 endef
 
 define targetConfig

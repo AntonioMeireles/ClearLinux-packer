@@ -3,7 +3,7 @@ Vagrant.configure(2) do |config|
   config.vm.define 'test-box'
   config.vm.hostname = 'test.clearlinux.local'
   config.vm.provider :libvirt do |libvirt, override|
-    host = 'libvirt-host.clearlinux.local'
+    host = ENV['LIBVIRT_HOST']
     username = 'clear'
     libvirt.host = host
     libvirt.connect_via_ssh = true
