@@ -8,8 +8,6 @@ Vagrant.configure(2) do |config|
     libvirt.host = host
     libvirt.connect_via_ssh = true
     libvirt.username = username
-    libvirt.socket = '/var/run/libvirt/libvirt-sock'
-    libvirt.storage_pool_path = '/home/clear/.local/share/libvirt/images'
     override.ssh.forward_agent = true
     override.ssh.proxy_command = "ssh -q -W %h:%p -l #{username} -x #{host}"
   end
