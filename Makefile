@@ -65,7 +65,7 @@ define buildBaseImg
 	@mkdir -p media
 	@echo "- assembling v$(VERSION) base img for $1 guests..."
 
-	sed -e "s,^version:.*,version: $(VERSION)," builders/$1.yml > $(targetConfig)
+	@sed -e "s,^version:.*,version: $(VERSION)," builders/$1.yml > $(targetConfig)
 	sudo clr-installer --config $(targetConfig) -l 4 -b installer:media/$(OSV)-$1-factory.img
 
 	rm -rf $(targetConfig)
@@ -104,14 +104,11 @@ $(if $(filter $1,vmware),vmware_desktop,$1)
 endef
 
 define boxSmokeTest
-	vagrant box add --name clear-test --provider $(strip $(provider)) boxes/$1/$(NV).$1.box --force
-	@pushd extras/test;                                                                        \
-	vagrant up --provider $(strip $(provider)) ;                                              \
-	vagrant ssh -c "w; sudo swupd info" && echo "- $1 box (v$(VERSION)) looks OK" || exit 1; \
-	vagrant halt -f ;                                                                       \
-	vagrant destroy -f;                                                                    \
-	vagrant box remove clear-test --provider $(strip $(provider));                        \
-	popd
+	vagrant box add --name clear-test --provider $(provider) boxes/$1/$(NV).$1.box --force
+	( cd extras/test; vagrant up --provider $(provider) && \
+	vagrant ssh -c "w; sudo swupd info" &&                \
+	vagrant halt -f && vagrant destroy -f &&             \
+	vagrant box remove clear-test --provider $(provider) )
 endef
 
 define authBearer
