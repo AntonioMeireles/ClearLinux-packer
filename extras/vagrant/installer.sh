@@ -15,10 +15,11 @@ VAGRANT_URL=https://github.com/hashicorp/vagrant/archive/${VAGRANT_ZIP}
 
 EMBEDDED_DIR=/opt/vagrant/embedded
 
-zipfile=/tmp/${VAGRANT_ZIP}
-rm -rf ${zipfile} || true
-curl -sL ${VAGRANT_URL} -o ${zipfile}
-(cd /tmp ; unzip -qq ${zipfile} && rm -rf ${zipfile})
+export GOPATH="$(mktemp -d)"
+
+zipfile="$(mktemp)"
+curl -sL ${VAGRANT_URL} -o "${zipfile}"
+unzip -qq "${zipfile}" -d /tmp
 
 source_dir="/tmp/vagrant-${VAGRANT_VERSION}"
 
@@ -67,7 +68,7 @@ pushd ${source_dir}
 popd
 
 function cleanup() {
-  rm -rf ${source_dir}
+  rm -rf ${source_dir} "${GOPATH}" "${zipfile}"
 }
 
 trap cleanup EXIT
