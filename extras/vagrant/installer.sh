@@ -5,6 +5,8 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
+# 'libarchive' is a much needed runtime dep as it provides 'bsdtar' which is
+# used to unpack boxes
 sudo swupd bundle-add {c,ruby,go}-basic devpkg-lib{virt,xml2,xslt,gpg-error} libarchive
 
 VAGRANT_VERSION=2.2.4
@@ -30,7 +32,9 @@ pushd ${source_dir}
     go build -o vagrant
   popd
 
-  sudo install -Dm644 "${substrate_dir}/common/gemrc" "${EMBEDDED_DIR}/etc/gemrc"
+  sudo mkdir -p "${EMBEDDED_DIR}/etc/"
+  echo "gem: --no-document --no-user-install" | sudo tee "${EMBEDDED_DIR}/etc/gemrc"
+  sudo chmod 0644 "${EMBEDDED_DIR}/etc/gemrc"
 
   sudo mkdir -p ${EMBEDDED_DIR}/rgloader/
   sudo install -m644 ${substrate_dir}/{linux,common}/rgloader/* "${EMBEDDED_DIR}/rgloader/"
@@ -43,22 +47,27 @@ pushd ${source_dir}
 
   sudo mkdir -p ${GEM_PATH}
 
-  sudo -E gem install pkg-config --no-document
-  sudo -E gem install vagrant-${VAGRANT_VERSION}.gem --no-document
+  sudo -E gem install pkg-config
+  sudo -E gem install vagrant-${VAGRANT_VERSION}.gem
   # XXX until building with system libs is sorted we need to install it before
-  # attempting agrant plugin install vagrant-libvirt
-  sudo -E gem install nokogiri --no-document
+  # attempting 'vagrant plugin install vagrant-libvirt'
+  sudo -E gem install nokogiri
 
   sudo install -Dm755 "${substrate_dir}/launcher/vagrant" /opt/vagrant/bin/vagrant
-
   sudo ln -sf /opt/vagrant/bin/vagrant /usr/local/bin/
 
-  [[ -f ${EMBEDDED_DIR}/manifest.json ]] || \
-    echo '{"vagrant_version": "'${VAGRANT_VERSION}'"}' | sudo tee ${EMBEDDED_DIR}/manifest.json
-  [[ -f ${EMBEDDED_DIR}/plugins.json ]] || \
-    echo '{"version":"1","installed":{}}' | sudo tee ${EMBEDDED_DIR}/plugins.json
-  sudo chmod 644 ${EMBEDDED_DIR}/*.json
-  vagrant plugin install vagrant-libvirt vagrant-guests-clearlinux
+  echo '{"vagrant_version": "'${VAGRANT_VERSION}'"}' | sudo tee ${EMBEDDED_DIR}/manifest.json
+  echo '{"version":"1","installed":{}}' | sudo tee ${EMBEDDED_DIR}/plugins.json
+  sudo chmod 0644 ${EMBEDDED_DIR}/*.json
 
-  rm -rf ${source_dir}
+  # for some reason getting transient breakage if installing more than one plugin at once (!)...
+  vagrant plugin install vagrant-libvirt
+  vagrant plugin install vagrant-guests-clearlinux
+
 popd
+
+function cleanup() {
+  rm -rf ${source_dir}
+}
+
+trap cleanup EXIT
