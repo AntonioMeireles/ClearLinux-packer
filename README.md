@@ -35,6 +35,36 @@ vagrant up
 > vagrant up --provider (virtualbox|vmware|libvirt)
 > ```
 
+## Going Full Circle - [Vagrant](http://www.vagrantup.com/), and [Packer](https://www.packer.io), natively on top of Clear Linux
+
+on your **Clear Linux** setup _just_ run ...
+
+- setup **libvirt**
+
+  ```bash
+  curl -O https://github.com/AntonioMeireles/ClearLinux-packer/raw/master/extras/clearlinux/setup/libvirtd.sh
+  chmod +x libvirtd.sh
+  ./libvirtd.sh
+  ```
+
+- install **Vagrant**
+
+  ```bash
+  curl -O https://github.com/AntonioMeireles/ClearLinux-packer/raw/master/extras/clearlinux/setup/vagrant.sh
+  chmod +x vagrant.sh
+  ./vagrant.sh
+  ```
+
+- install **Packer**
+
+  ```bash
+  curl -O https://github.com/AntonioMeireles/ClearLinux-packer/raw/master/extras/clearlinux/setup/packer.sh
+  chmod +x packer.sh
+  ./packer.sh
+  ```
+
+... and that's it :-)
+
 ## Tips & Tricks
 
 - take a deep look at the *guest* plugin available features and capabilities by reading its
@@ -92,6 +122,8 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
 
 ## What else do you need to know?
 
+- a ready to use, over Vagrant, native Clear Linux libvirt setup is available inside
+  [`extras/libvirt.native`](./extras/libvirt.native/)
 - **All** boxes use para-virtualized drivers by default, when possible, for optimal performance.
 - Graphical/Desktop performance optimization wasn't originally a primary concern as the Author's
   primary use case was towards headless use.
