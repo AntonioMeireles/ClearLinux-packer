@@ -3,11 +3,16 @@
 set -o errexit
 set -o pipefail
 set -o nounset
-set -o xtrace
 
+revision=$(swupd info | grep Installed | sed -e 's/.*: //')
+if [[ "${revision}" -lt 29090 ]]; then
+  echo "Aborted: this requires Clear Linux version '29090' or later - you're running '${revision}'"
+  echo "         please run 'sudo swupd update' first"
+  exit 1
+fi
 # 'libarchive' is a much needed runtime dep as it provides 'bsdtar' which is
 # used to unpack boxes
-sudo swupd bundle-add {c,ruby,go}-basic devpkg-lib{virt,xml2,xslt,gpg-error} libarchive
+sudo swupd bundle-add {c,ruby,go}-basic devpkg-lib{virt,xml2,xslt,gpg-error,gcrypt} libarchive
 
 VAGRANT_VERSION=2.2.4
 VAGRANT_ZIP="v${VAGRANT_VERSION}.zip"
@@ -43,16 +48,11 @@ pushd ${source_dir}
   export GEM_PATH="${EMBEDDED_DIR}/gems/${VAGRANT_VERSION}"
   export GEM_HOME="${GEM_PATH}"
   export GEMRC="${EMBEDDED_DIR}/etc/gemrc"
-  # XXX
-  # export NOKOGIRI_USE_SYSTEM_LIBRARIES
 
   sudo mkdir -p ${GEM_PATH}
 
   sudo -E gem install pkg-config
   sudo -E gem install vagrant-${VAGRANT_VERSION}.gem
-  # XXX until building with system libs is sorted we need to install it before
-  # attempting 'vagrant plugin install vagrant-libvirt'
-  sudo -E gem install nokogiri
 
   sudo install -Dm755 "${substrate_dir}/launcher/vagrant" /opt/vagrant/bin/vagrant
   sudo ln -sf /opt/vagrant/bin/vagrant /usr/local/bin/
