@@ -50,7 +50,7 @@ on your **Clear Linux** setup _just_ run ...
 - install **Vagrant**
 
   ```bash
-  curl -O https://github.com/AntonioMeireles/ClearLinux-packer/raw/master/extras/clearlinux/setup/vagrant.sh
+  curl -LO https://github.com/AntonioMeireles/ClearLinux-packer/raw/master/extras/clearlinux/setup/vagrant.sh
   chmod +x vagrant.sh
   ./vagrant.sh
   ```
@@ -58,7 +58,7 @@ on your **Clear Linux** setup _just_ run ...
 - install **Packer**
 
   ```bash
-  curl -O https://github.com/AntonioMeireles/ClearLinux-packer/raw/master/extras/clearlinux/setup/packer.sh
+  curl -LO https://github.com/AntonioMeireles/ClearLinux-packer/raw/master/extras/clearlinux/setup/packer.sh
   chmod +x packer.sh
   ./packer.sh
   ```
