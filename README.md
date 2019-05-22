@@ -130,11 +130,12 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
 
   Things changed, as the user base increased and spoken, and now desktop focused user cases are
   first class citizens too.
-  > inside [`extras/gnome-desktop`](./extras/gnome-desktop/) is a sample
-  > [`Vagrantfile`](./extras/gnome-desktop/Vagrantfile) that will fully setup and boot
-  > **[Gnome Desktop](https://www.gnome.org)** on top of **Clear Linux**.
-  >
-  > - the default password of the default user (`clearlinux`) is `V@grant!`
+
+  Inside [`extras/gnome-desktop`](./extras/gnome-desktop/) there is a sample
+  [`Vagrantfile`](./extras/gnome-desktop/Vagrantfile) that will fully setup and boot
+  **[Gnome Desktop](https://www.gnome.org)** on top of **Clear Linux**. (Over a VMware hypervisor
+  just make sure that you are using a *box* post `29520`)
+  - the default password of the default user (`clearlinux`) is `V@grant!`
 
   So, if you happen to have a desktop oriented use case and something isn't still working as you'd
   expect just [tell](https://github.com/AntonioMeireles/ClearLinux-packer/issues)!

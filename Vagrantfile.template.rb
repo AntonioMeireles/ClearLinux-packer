@@ -40,6 +40,7 @@ Vagrant.configure(2) do |config|
       vmware.gui = !headless
 
       {
+        'mks.enable3d' => 'TRUE',
         'cpuid.coresPerSocket' => '1',
         'memsize' => '2048',
         'numvcpus' => '2'
