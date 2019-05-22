@@ -5,7 +5,7 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-PACKER_VERSION=1.4.0
+PACKER_VERSION=1.4.1
 PACKER_ZIP=packer_${PACKER_VERSION}_linux_amd64.zip
 PACKER_URL=https://releases.hashicorp.com/packer/${PACKER_VERSION}/${PACKER_ZIP}
 
