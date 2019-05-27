@@ -18,7 +18,7 @@
 			"ssh_wait_timeout": "5m",
 			"vm_name": "{{ user `name` }}",
 			"shutdown_command": "cat /dev/zero > zero.fill; sync; sleep 5; sync; rm -f zero.fill; sudo shutdown -P now",
-			"guest_additions_mode": "disable",
+			"guest_additions_mode": "upload",
 			"vboxmanage": [
 				[ "modifyvm", "{{.Name}}", "--memory", "2048" ],
 				[ "modifyvm", "{{.Name}}", "--ostype", "Linux26_64" ],
@@ -27,10 +27,7 @@
 				[ "modifyvm", "{{.Name}}", "--firmware", "efi" ],
 				[ "modifyvm", "{{.Name}}", "--paravirtprovider", "kvm" ],
 				[ "modifyvm", "{{.Name}}", "--rtcuseutc", "on" ],
-				[ "modifyvm", "{{.Name}}", "--boot1", "disk" ],
-				[ "modifyvm", "{{.Name}}", "--longmode", "on" ],
-				[ "modifyvm", "{{.Name}}", "--hwvirtex", "on" ],
-				[ "modifyvm", "{{.Name}}", "--vram", "64" ]
+				[ "modifyvm", "{{.Name}}", "--boot1", "disk" ]
 			]
 		}
 	],
@@ -40,6 +37,11 @@
 			"inline": [
 				"sudo timedatectl set-ntp true"
 			],
+			"pause_before": "5s"
+		}, {
+			"type": "shell",
+			"script": "vboxguestsetup.sh",
+			"execute_command": "sudo bash {{.Path}}",
 			"pause_before": "5s"
 		}, {
 			"type": "shell",

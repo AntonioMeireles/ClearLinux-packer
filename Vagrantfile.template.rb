@@ -57,9 +57,16 @@ Vagrant.configure(2) do |config|
 
     {
       '--memory' => 2048,
-      '--vram' => 256,
       '--cpus' => 2,
-      '--hwvirtex' => 'on'
+      '--hwvirtex' => 'on',
+      '--nestedpaging' => 'on',
+      '--largepages' => 'on',
+      '--vtxvpid' => 'on',
+      '--vtxux' => 'on',
+      '--graphicscontroller' => 'vmsvga',
+      '--accelerate3d' => 'on',
+      '--clipboard' => 'bidirectional',
+      '--draganddrop' => 'bidirectional'
     }.each { |k, v| vbox.customize ['modifyvm', :id, k.to_s, v.to_s] }
 
     (1..8).each do |n|

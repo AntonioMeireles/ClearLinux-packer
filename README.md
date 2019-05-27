@@ -122,6 +122,7 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
 
 ## What else do you need to know?
 
+- the default password of the default user (`clearlinux`) is `V@grant!`
 - a ready to use, over Vagrant, native Clear Linux libvirt setup is available inside
   [`extras/libvirt.native`](./extras/libvirt.native/)
 - **All** boxes use para-virtualized drivers by default, when possible, for optimal performance.
@@ -133,9 +134,13 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
 
   Inside [`extras/gnome-desktop`](./extras/gnome-desktop/) there is a sample
   [`Vagrantfile`](./extras/gnome-desktop/Vagrantfile) that will fully setup and boot
-  **[Gnome Desktop](https://www.gnome.org)** on top of **Clear Linux**. (Over a VMware hypervisor
-  just make sure that you are using a *box* post `29520`)
-  - the default password of the default user (`clearlinux`) is `V@grant!`
+  **[Gnome Desktop](https://www.gnome.org)** on top of **Clear Linux**.
+  > - Over a **VMware** hypervisor just make sure that you are using a *box* post `29520`
+  >   - shared clipboard (copy/paste to/from host) is not yet working as there are some
+  >     [pending](https://github.com/clearlinux/distribution/issues/330#issuecomment-496474712)
+  >     upstream packaging issues.
+  > - Over **VirtualBox** just make sure you are using a *box* post `29610`
+  >   - shared clipboard (copy/paste to/from host) works out of the box.
 
   So, if you happen to have a desktop oriented use case and something isn't still working as you'd
   expect just [tell](https://github.com/AntonioMeireles/ClearLinux-packer/issues)!
