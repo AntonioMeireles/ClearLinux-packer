@@ -66,7 +66,7 @@ define buildBaseImg
 	@echo "- assembling v$(VERSION) base img for $1 guests..."
 
 	@sed -e "s,^version:.*,version: $(VERSION)," builders/$1.yml > $(targetConfig)
-	sudo clr-installer --config $(targetConfig) -l 4 -b installer:media/$(OSV)-$1-factory.img
+	sudo clr-installer --swupd-clean --config $(targetConfig) -l 4 -b installer:media/$(OSV)-$1-factory.img
 
 	rm -rf $(targetConfig)
 endef
