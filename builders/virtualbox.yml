@@ -38,9 +38,7 @@ targetMedia:
     type: part
 
 bundles:
-- os-core
 - os-core-update
-- openssh-server
 - os-cloudguest
 - sysadmin-basic
 - network-basic
@@ -49,7 +47,6 @@ bundles:
 - containers-basic
 - patch
 - diffutils
-- hardware-uefi
 
 autoUpdate: false
 postArchive: true

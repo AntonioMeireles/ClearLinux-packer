@@ -38,11 +38,9 @@ targetMedia:
     type: part
 
 bundles:
-- os-core
 - os-core-update
-- openssh-server
 - os-cloudguest
-- qemu-guest-additions
+- os-cloudguest-kvm
 - sysadmin-basic
 - network-basic
 - vim
@@ -50,7 +48,6 @@ bundles:
 - containers-basic
 - patch
 - diffutils
-- hardware-uefi
 
 autoUpdate: false
 postArchive: true
