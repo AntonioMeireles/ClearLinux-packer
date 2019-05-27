@@ -8,3 +8,5 @@ Metrics/BlockLength:
 Naming/FileName:
   Exclude:
   - 'Vagrantfile.template.rb'
+Style/FrozenStringLiteralComment:
+  Enabled: false
