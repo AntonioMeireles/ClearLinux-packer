@@ -16,7 +16,7 @@ Vagrant.configure(2) do |config|
   config.vagrant.plugins = required_plugins
   config.vm.define :libvirt
   config.vm.hostname = 'libvirt-host.clearlinux.local'
-  config.vm.box = 'AntonioMeireles/clearlinux'
+  config.vm.box = 'AntonioMeireles/ClearLinux'
   # check https://www.vagrantup.com/docs/synced-folders/nfs.html#root-privilege-requirement
   # for (vagrant) host specific tweaks...
   config.vm.synced_folder '../../', '/home/clear/ClearLinux-packer',

@@ -9,7 +9,7 @@ required_plugins = {
 
 Vagrant.configure('2') do |config|
   config.vagrant.plugins = required_plugins
-  config.vm.box = 'AntonioMeireles/CLearLinux'
+  config.vm.box = 'AntonioMeireles/ClearLinux'
   config.vm.define 'gnome-desktop'
   config.vm.hostname = 'gnome.clearlinux.local'
   %w[vmware_fusion vmware_desktop vmware_workstation].each do |provider|
