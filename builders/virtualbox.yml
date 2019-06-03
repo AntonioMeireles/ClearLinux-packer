@@ -42,6 +42,7 @@ bundles:
 - os-cloudguest
 - sysadmin-basic
 - network-basic
+- systemd-networkd-autostart
 - vim
 - shells
 - containers-basic
