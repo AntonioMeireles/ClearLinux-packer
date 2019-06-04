@@ -51,8 +51,7 @@ pushd ${source_dir}
 
   sudo mkdir -p ${GEM_PATH}
 
-  sudo -E gem install pkg-config
-  sudo -E gem install vagrant-${VAGRANT_VERSION}.gem
+  sudo -E gem install pkg-config vagrant-${VAGRANT_VERSION}.gem
 
   sudo install -Dm755 "${substrate_dir}/launcher/vagrant" /opt/vagrant/bin/vagrant
   sudo ln -sf /opt/vagrant/bin/vagrant /usr/local/bin/
