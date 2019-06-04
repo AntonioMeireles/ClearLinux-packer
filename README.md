@@ -42,7 +42,7 @@ on your **Clear Linux** setup _just_ run ...
 - setup **libvirt**
 
   ```bash
-  curl -O https://github.com/AntonioMeireles/ClearLinux-packer/raw/master/extras/clearlinux/setup/libvirtd.sh
+  curl https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/libvirtd.sh
   chmod +x libvirtd.sh
   ./libvirtd.sh
   ```
@@ -50,7 +50,7 @@ on your **Clear Linux** setup _just_ run ...
 - install **Vagrant**
 
   ```bash
-  curl -LO https://github.com/AntonioMeireles/ClearLinux-packer/raw/master/extras/clearlinux/setup/vagrant.sh
+  curl https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/vagrant.sh
   chmod +x vagrant.sh
   ./vagrant.sh
   ```
@@ -58,7 +58,7 @@ on your **Clear Linux** setup _just_ run ...
 - install **Packer**
 
   ```bash
-  curl -LO https://github.com/AntonioMeireles/ClearLinux-packer/raw/master/extras/clearlinux/setup/packer.sh
+  curl https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/packer.sh
   chmod +x packer.sh
   ./packer.sh
   ```
