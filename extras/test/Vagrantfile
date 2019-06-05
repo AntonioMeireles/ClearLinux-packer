@@ -2,13 +2,4 @@ Vagrant.configure(2) do |config|
   config.vm.box = 'clear-test'
   config.vm.define 'test-box'
   config.vm.hostname = 'test.clearlinux.local'
-  config.vm.provider :libvirt do |libvirt, override|
-    host = ENV['LIBVIRT_HOST']
-    username = 'clear'
-    libvirt.host = host
-    libvirt.connect_via_ssh = true
-    libvirt.username = username
-    override.ssh.forward_agent = true
-    override.ssh.proxy_command = "ssh -q -W %h:%p -l #{username} -x #{host}"
-  end
 end

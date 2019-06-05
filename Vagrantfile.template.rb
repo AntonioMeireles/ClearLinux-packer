@@ -73,7 +73,14 @@ Vagrant.configure(2) do |config|
       vbox.customize ['modifyvm', :id, "--nictype#{n}", 'virtio']
     end
   end
-  config.vm.provider 'libvirt' do |libvirt|
+  config.vm.provider 'libvirt' do |libvirt, override|
+    host = ENV['LIBVIRT_HOST'] || 'localhost'
+    username = 'clear'
+    libvirt.host = host
+    libvirt.connect_via_ssh = true
+    libvirt.username = username
+    override.ssh.forward_agent = true
+    override.ssh.proxy_command = "ssh -q -W %h:%p -l #{username} -x #{host}"
     # XXX: this is the default location in ClearLinux and Debian
     libvirt.loader = '/usr/share/qemu/OVMF.fd'
     libvirt.driver = 'kvm'

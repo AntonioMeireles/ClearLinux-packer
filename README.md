@@ -125,6 +125,14 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
 - the default password of the default user (`clearlinux`) is `V@grant!`
 - a ready to use, over Vagrant, native Clear Linux libvirt setup is available inside
   [`extras/libvirt.native`](./extras/libvirt.native/)
+- when using **libvirt** provider by default it is assumed that the *libvirt* host is the same as
+   the vagrant host (*`localhost`*). If you want to target another remote *libvirt* host just set
+   it in `LIBVIRT_HOST` when invoking `vagrant up`...
+
+  ```bash
+  LIBVIRT_HOST=libvirt-host.clearlinux.local vagrant up --provider=libvirt
+  ```
+
 - **All** boxes use para-virtualized drivers by default, when possible, for optimal performance.
 - Graphical/Desktop performance optimization wasn't originally a primary concern as the Author's
   primary use case was towards headless use.
