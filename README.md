@@ -136,9 +136,7 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
   [`Vagrantfile`](./extras/gnome-desktop/Vagrantfile) that will fully setup and boot
   **[Gnome Desktop](https://www.gnome.org)** on top of **Clear Linux**.
   > - Over a **VMware** hypervisor just make sure that you are using a *box* post `29520`
-  >   - shared clipboard (copy/paste to/from host) is not yet working as there are some
-  >     [pending](https://github.com/clearlinux/distribution/issues/330#issuecomment-496474712)
-  >     upstream packaging issues.
+  >   - shared clipboard (copy/paste to/from host) works out of the box since `29780`.
   > - Over **VirtualBox** just make sure you are using a *box* post `29610`
   >   - shared clipboard (copy/paste to/from host) works out of the box.
 
