@@ -28,6 +28,12 @@ unzip -qq "${zipfile}" -d /tmp
 
 source_dir="/tmp/vagrant-${VAGRANT_VERSION}"
 
+function cleanup() {
+  rm -rf ${source_dir} "${GOPATH}" "${zipfile}"
+}
+
+trap cleanup EXIT
+
 pushd ${source_dir}
   git clone https://github.com/hashicorp/vagrant-installers || true
   substrate_dir="${source_dir}/vagrant-installers/substrate"
@@ -66,8 +72,3 @@ pushd ${source_dir}
 
 popd
 
-function cleanup() {
-  rm -rf ${source_dir} "${GOPATH}" "${zipfile}"
-}
-
-trap cleanup EXIT

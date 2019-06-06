@@ -5,9 +5,18 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-PACKER_VERSION=1.4.1
-PACKER_ZIP=packer_${PACKER_VERSION}_linux_amd64.zip
-PACKER_URL=https://releases.hashicorp.com/packer/${PACKER_VERSION}/${PACKER_ZIP}
+export PACKER_VERSION=1.4.1
+export GOPATH="$(mktemp -d)"
+export GO111MODULE=on
 
-curl -s ${PACKER_URL} -o ${PACKER_ZIP}
-unzip -qq ${PACKER_ZIP} && sudo mv packer /usr/local/bin && rm -rf ${PACKER_ZIP}
+function cleanup() {
+  sudo rm -rf "${GOPATH}"
+}
+
+trap cleanup EXIT
+
+sudo swupd bundle-add {c,ruby,go}-basic
+
+go get github.com/hashicorp/packer@v${PACKER_VERSION}
+
+sudo install -Dm0755 "${GOPATH}/bin/packer" /usr/local/bin
