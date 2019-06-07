@@ -75,6 +75,21 @@ on your **Clear Linux** setup _just_ run ...
 
   When using **Virtualbox** or **VMware** if you wish to have access to the boot console you can boot them
   in graphical mode by invoking `vagrant` with `HEADLESS=false` set in your environment.
+- when using the **libvirt** provider by default it is assumed that the *libvirt* host is the same as
+  the vagrant host (*`localhost`*).
+
+  If you want Vagrant to target a remote *libvirt* host you will need to set it in `LIBVIRT_HOST`
+  when invoking `vagrant up`.
+
+  It is also assumed, by default, that the remote *libvirt* host is running Clear Linux what may or
+  not be the case... If it isn't then the `LIBVIRT_USERNAME` will also need to be set.
+
+  So, in order to target a remote, say Ubuntu, host what one would need to do would be along...
+
+  ```bash
+  LIBVIRT_HOST=libvirt-host.ubuntu.local LIBVIRT_USERNAME=someUsername vagrant up --provider=libvirt
+  ```
+
 - if you want to consume additional **Vagrant** plugins from your *Vagrantfile* the preferred way to
    do it is along the snippet bellow...
 
@@ -123,16 +138,8 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
 ## What else do you need to know?
 
 - the default password of the default user (`clearlinux`) is `V@grant!`
-- a ready to use, over Vagrant, native Clear Linux libvirt setup is available inside
+- a ready to use, over Vagrant, native Clear Linux **libvirt** setup is available inside
   [`extras/libvirt.native`](./extras/libvirt.native/)
-- when using **libvirt** provider by default it is assumed that the *libvirt* host is the same as
-   the vagrant host (*`localhost`*). If you want to target another remote *libvirt* host just set
-   it in `LIBVIRT_HOST` when invoking `vagrant up`...
-
-  ```bash
-  LIBVIRT_HOST=libvirt-host.clearlinux.local vagrant up --provider=libvirt
-  ```
-
 - **All** boxes use para-virtualized drivers by default, when possible, for optimal performance.
 - Graphical/Desktop performance optimization wasn't originally a primary concern as the Author's
   primary use case was towards headless use.

@@ -74,13 +74,25 @@ Vagrant.configure(2) do |config|
     end
   end
   config.vm.provider 'libvirt' do |libvirt, override|
-    host = ENV['LIBVIRT_HOST'] || 'localhost'
-    username = 'clear'
-    libvirt.host = host
-    libvirt.connect_via_ssh = true
-    libvirt.username = username
-    override.ssh.forward_agent = true
-    override.ssh.proxy_command = "ssh -q -W %h:%p -l #{username} -x #{host}"
+    # bellow, it is assumed that the remote libvirt host is running not only
+    # clearlinux but also is matching our conventions ...
+    # If it isn't `LIBVIRT_USERNAME` needs to be set to match users' local
+    # environment.
+    unless ENV['LIBVIRT_HOST'].nil? || ENV['LIBVIRT_HOST'].empty?
+      host = ENV['LIBVIRT_HOST']
+      username = if ENV['LIBVIRT_USERNAME'].nil? ||
+                    ENV['LIBVIRT_USERNAME'].empty?
+                   'clear'
+                 else
+                   ENV['LIBVIRT_USERNAME']
+                 end
+
+      libvirt.host = host
+      libvirt.connect_via_ssh = true
+      libvirt.username = username
+      override.ssh.forward_agent = true
+      override.ssh.proxy_command = "ssh -q -W %h:%p -l #{username} -x #{host}"
+    end
     # XXX: this is the default location in ClearLinux and Debian
     libvirt.loader = '/usr/share/qemu/OVMF.fd'
     libvirt.driver = 'kvm'
