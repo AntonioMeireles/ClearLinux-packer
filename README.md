@@ -35,7 +35,7 @@ vagrant up
 > vagrant up --provider (virtualbox|vmware|libvirt)
 > ```
 
-## Going Full Circle - [Vagrant](http://www.vagrantup.com/), and [Packer](https://www.packer.io), natively on top of Clear Linux
+## Going Full Circle - [Vagrant](http://www.vagrantup.com/), [Packer](https://www.packer.io) and... [Terraform](https://www.terraform.io) natively on top of Clear Linux
 
 on your **Clear Linux** setup _just_ run ...
 
@@ -61,6 +61,14 @@ on your **Clear Linux** setup _just_ run ...
   curl https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/packer.sh
   chmod +x packer.sh
   ./packer.sh
+  ```
+
+- install **Terraform** (plus [terraform-provider-libvirt](https://github.com/dmacvicar/terraform-provider-libvirt))
+
+  ```bash
+  curl https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/terraform.sh
+  chmod +x terraform.sh
+  ./terraform.sh
   ```
 
 ... and that's it :-)
