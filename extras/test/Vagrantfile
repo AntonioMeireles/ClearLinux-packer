@@ -1,5 +1,13 @@
+required_plugins = {
+  'vagrant-reload' => {
+    'version' => '>= 0.0.1'
+  }
+}
+
 Vagrant.configure(2) do |config|
+  config.vagrant.plugins = required_plugins
   config.vm.box = 'clear-test'
   config.vm.define 'test-box'
   config.vm.hostname = 'test.clearlinux.local'
+  config.vm.provision :reload
 end
