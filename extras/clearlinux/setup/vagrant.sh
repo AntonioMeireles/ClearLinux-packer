@@ -20,7 +20,8 @@ VAGRANT_URL=https://github.com/hashicorp/vagrant/archive/${VAGRANT_ZIP}
 
 EMBEDDED_DIR=/opt/vagrant/embedded
 
-export GOPATH="$(mktemp -d)"
+GOPATH=$(mktemp -d)
+export GOPATH
 
 zipfile="$(mktemp)"
 curl -sL ${VAGRANT_URL} -o "${zipfile}"
