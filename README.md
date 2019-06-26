@@ -38,7 +38,7 @@ on your **Clear Linux** setup _just_ run ...
 - setup **libvirt**
 
   ```bash
-  curl https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/libvirtd.sh
+  curl -O https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/libvirtd.sh
   chmod +x libvirtd.sh
   ./libvirtd.sh
   ```
@@ -46,7 +46,7 @@ on your **Clear Linux** setup _just_ run ...
 - install **Vagrant**
 
   ```bash
-  curl https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/vagrant.sh
+  curl -O https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/vagrant.sh
   chmod +x vagrant.sh
   ./vagrant.sh
   ```
@@ -54,7 +54,7 @@ on your **Clear Linux** setup _just_ run ...
 - install **Packer**
 
   ```bash
-  curl https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/packer.sh
+  curl -O https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/packer.sh
   chmod +x packer.sh
   ./packer.sh
   ```
@@ -62,7 +62,7 @@ on your **Clear Linux** setup _just_ run ...
 - install **Terraform** (plus [terraform-provider-libvirt](https://github.com/dmacvicar/terraform-provider-libvirt))
 
   ```bash
-  curl https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/terraform.sh
+  curl -O https://raw.githubusercontent.com/AntonioMeireles/ClearLinux-packer/master/extras/clearlinux/setup/terraform.sh
   chmod +x terraform.sh
   ./terraform.sh
   ```
