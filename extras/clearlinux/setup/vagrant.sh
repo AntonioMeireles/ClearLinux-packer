@@ -14,7 +14,7 @@ fi
 # used to unpack boxes
 sudo swupd bundle-add {c,ruby,go}-basic devpkg-lib{virt,xml2,xslt,gpg-error,gcrypt} libarchive
 
-VAGRANT_VERSION=2.2.4
+VAGRANT_VERSION=2.2.5
 VAGRANT_ZIP="v${VAGRANT_VERSION}.zip"
 VAGRANT_URL=https://github.com/hashicorp/vagrant/archive/${VAGRANT_ZIP}
 
