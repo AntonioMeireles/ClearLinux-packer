@@ -5,8 +5,10 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-export PACKER_VERSION=1.4.1
-export GOPATH="$(mktemp -d)"
+export PACKER_VERSION=1.4.2
+
+GOPATH="$(mktemp -d)"
+export GOPATH
 export GO111MODULE=on
 
 function cleanup() {
