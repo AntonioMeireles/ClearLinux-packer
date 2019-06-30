@@ -94,6 +94,20 @@ on your **Clear Linux** setup _just_ run ...
   LIBVIRT_HOST=libvirt-host.ubuntu.local LIBVIRT_USERNAME=someUsername vagrant up --provider=libvirt
   ```
 
+  > regarding **libvirt**: if running Vagrant over a macOS host the `vagrant-libvirt` won't install
+  > correctly out of the box. You'll need to ensure in advance that `libvirt` is installed locally
+  >(for its headers) by running:
+  >
+  > ```shell
+  > brew install libvirt
+  > ```
+  >
+  > and then install the plugin but _only_ after pointing it the right locations...
+  >
+  >  ```shell
+  > CONFIGURE_ARGS='with-ldflags=-L/opt/vagrant/embedded/lib with-libvirt-include=/usr/local/include/libvirt with-libvirt-lib=/usr/local/lib' vagrant plugin install vagrant-libvirt
+  > ```
+
 - if you want to consume additional **Vagrant** plugins from your *Vagrantfile* the preferred way to
    do it is along the snippet bellow...
 
