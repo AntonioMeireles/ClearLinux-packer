@@ -10,7 +10,7 @@ required_plugins = {
   }
 }
 
-VMWARE = %w[vmware_fusion vmware_desktop vmware_workstation].freeze
+VMWARE = ['vmware_fusion', 'vmware_desktop', 'vmware_workstation'].freeze
 
 Vagrant.configure(2) do |config|
   config.vagrant.plugins = required_plugins

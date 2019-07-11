@@ -10,3 +10,5 @@ Naming/FileName:
   - 'Vagrantfile.template.rb'
 Style/FrozenStringLiteralComment:
   Enabled: false
+Style/WordArray:
+  EnforcedStyle: brackets

@@ -12,7 +12,7 @@ Vagrant.configure('2') do |config|
   config.vm.box = 'AntonioMeireles/ClearLinux'
   config.vm.define 'gnome-desktop'
   config.vm.hostname = 'gnome.clearlinux.local'
-  %w[vmware_fusion vmware_desktop vmware_workstation].each do |provider|
+  ['vmware_fusion', 'vmware_desktop', 'vmware_workstation'].each do |provider|
     config.vm.provider provider do |vmware, override|
       vmware.gui = true
       {

@@ -34,8 +34,8 @@ Vagrant.configure(2) do |config|
   config.ssh.insert_key = false
   config.ssh.username = 'clear'
 
-  %w[vmware_workstation vmware_fusion vmware_desktop].each do |vmware_provider|
-    config.vm.provider(vmware_provider) do |vmware|
+  ['vmware_workstation', 'vmware_fusion', 'vmware_desktop'].each do |vmw|
+    config.vm.provider(vmw) do |vmware|
       vmware.whitelist_verified = true
       vmware.gui = !headless
 
