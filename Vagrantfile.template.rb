@@ -33,6 +33,8 @@ Vagrant.configure(2) do |config|
   # always use Vagrants' insecure key
   config.ssh.insert_key = false
   config.ssh.username = 'clear'
+  # no point on todays' networks and only adds extra overhead...
+  config.ssh.compression = false
 
   ['vmware_workstation', 'vmware_fusion', 'vmware_desktop'].each do |vmw|
     config.vm.provider(vmw) do |vmware|
