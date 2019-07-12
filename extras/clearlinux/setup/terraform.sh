@@ -5,9 +5,10 @@ set -o pipefail
 set -o nounset
 
 export TERRAFORM_PLUGIN_DIR=~/.terraform.d/plugins
-export TERRAFORM_VERSION=0.12.1
+export TERRAFORM_VERSION=0.12.4
 export TERRAFORM_PROVIDER_LIBVIRT_VERSION=0.5.2
-export GOPATH="$(mktemp -d)"
+GOPATH="$(mktemp -d)"
+export GOPATH
 export GO111MODULE=on
 
 function cleanup() {
@@ -23,6 +24,3 @@ sudo install -Dvm0755 "${GOPATH}/bin/terraform" -t /usr/local/bin/
 
 go get github.com/dmacvicar/terraform-provider-libvirt@v${TERRAFORM_PROVIDER_LIBVIRT_VERSION}
 install -Dvm0755 "${GOPATH}/bin/terraform-provider-libvirt" ${TERRAFORM_PLUGIN_DIR}/terraform-provider-libvirt
-
-
-
