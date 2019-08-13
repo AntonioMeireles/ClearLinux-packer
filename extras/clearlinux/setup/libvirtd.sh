@@ -7,7 +7,7 @@ set -o xtrace
 
 [[ -x "$(command -v virsh)" ]] || {
   echo "Aborted: you do not appear to have the 'kvm-host' bundle installed"
-  echo "         please run 'sudo swupd kvm-host' and then try again"
+  echo "         please run 'sudo swupd bundle-add kvm-host' and then try again"
   exit 1
 }
 sudo systemctl enable libvirtd --now
