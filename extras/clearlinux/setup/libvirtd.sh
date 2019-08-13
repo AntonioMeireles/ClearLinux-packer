@@ -13,7 +13,7 @@ set -o xtrace
 sudo systemctl enable libvirtd --now
 
 for group in kvm libvirt; do
-  sudo usermod -G ${group} -a clear
+  sudo usermod -G ${group} -a $USER
 done
 
 sudo mkdir -p /var/lib/libvirt/{isos,images}/ /etc/profile.d/ /usr/local/bin
