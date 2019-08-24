@@ -12,3 +12,6 @@ ClientAliveCountMax 30
 # XXX: workaround for https://github.com/hashicorp/vagrant/issues/10730
 # drop when fixed
 IPQoS lowdelay throughput
+
+# enabling as it is handy to validate some use cases on the field
+Subsystem sftp /usr/libexec/sftp-server
