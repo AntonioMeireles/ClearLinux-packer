@@ -23,8 +23,9 @@ end
 exec "vagrant #{ARGV.join(' ')}" if need_restart
 
 Vagrant.configure(2) do |config|
-  headless = ENV['HEADLESS'] || true
   name = 'clearlinux'
+  headless = ENV['HEADLESS'] || true
+  proxy_whitelisted = (ENV['PROXY_WHITELIST'] || '').to_s
 
   config.vm.hostname = name.to_s
   config.vm.define :name.to_s
@@ -106,12 +107,17 @@ Vagrant.configure(2) do |config|
                     type: 'unix',
                     target_type: 'virtio'
   end
-  if Vagrant.has_plugin?('vagrant-proxyconf')
-    config.proxy.http = (ENV['http_proxy'] || ENV['HTTP_PROXY'])
-    config.proxy.https = (ENV['https_proxy'] || ENV['HTTPS_PROXY'])
-    config.proxy.no_proxy =
-      (ENV['no_proxy'] || ENV['NO_PROXY'] || 'localhost,127.0.0.1')
-    # since we're masking it by default ...
-    config.proxy.enabled = { docker: false }
+  if ENV.keys.grep(/(http(|s)|no)_proxy/i).any?
+    if Vagrant.has_plugin?('vagrant-proxyconf')
+      w = proxy_whitelisted.empty? ? '' : ",#{proxy_whitelisted}".to_s
+
+      config.proxy.http     = (ENV['http_proxy'] || ENV['HTTP_PROXY'])
+      config.proxy.https    = (ENV['https_proxy'] || ENV['HTTPS_PROXY'])
+      config.proxy.no_proxy =
+        (ENV['no_proxy'] || ENV['NO_PROXY'] || 'localhost,127.0.0.1').to_s + w
+
+      # since we've been masking it by default ...
+      config.proxy.enabled  = { docker: false }
+    end
   end
 end
