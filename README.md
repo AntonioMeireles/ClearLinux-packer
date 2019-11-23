@@ -127,10 +127,10 @@ on your **Clear Linux** setup _just_ run ...
   ...
   ```
 
-- the available **Clear Linux** boxes ship with a default timezone set unlikely to suit everyone,
-  as the default is **`Europe/Lisbon`**, since the Author is based in **Porto**, **Portugal**.
+- the available **Clear Linux** boxes, post **31660**, ship with **`UTC`** as their default timezone.
+  Previously, the default was **`Europe/Lisbon`**, since the Author is based in **Porto**, **Portugal**.
 
-  Here's how to programmatically set your own one straight from the `Vagrantfile`:
+  Here's how to programmatically set a custom timezone straight from the `Vagrantfile`:
 
   ```ruby
   config.vm.provision :set_timezone, timezone: 'Asia/Dili'
@@ -190,4 +190,3 @@ By default these boxes are updated around once a week, unless:
 This is an [open source](http://opensource.org/osd) project released under
 the [Apache License, Version 2.0](http://opensource.org/licenses/Apache-2.0).
 [Contributions](https://github.com/AntonioMeireles/ClearLinux-packer/pulls) and [suggestions](https://github.com/AntonioMeireles/ClearLinux-packer/issues) are gladly welcomed!
-

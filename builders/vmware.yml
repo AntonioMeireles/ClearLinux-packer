@@ -57,7 +57,7 @@ LegacyBios: false
 telemetry: false
 keyboard: us
 language: en_US.UTF-8
-timezone: Europe/Lisbon
+timezone: UTC
 kernel: kernel-lts2018
 
 kernel-arguments: {
