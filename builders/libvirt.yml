@@ -55,6 +55,7 @@ postArchive: true
 postReboot: false
 LegacyBios: false
 telemetry: false
+copyNetwork: false
 keyboard: us
 language: en_US.UTF-8
 timezone: UTC
