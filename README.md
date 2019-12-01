@@ -155,7 +155,7 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
 
 ## What else do you need to know?
 
-- the default password of the default user (`clearlinux`) is `V@grant!`
+- the default password of the default user (`clear`) is `V@grant!`
 - a ready to use, over Vagrant, native Clear Linux **libvirt** setup is available inside
   [`extras/libvirt.native`](./extras/libvirt.native/)
 - **All** boxes use para-virtualized drivers by default, when possible, for optimal performance.
