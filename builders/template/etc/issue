@@ -1,0 +1,16 @@
+Welcome to the Clear Linux* OS
+
+- General information about Clear Linux*
+  * Documentation
+    - https://clearlinux.org/documentation
+  * Community Support
+    - https://community.clearlinux.org
+
+- Specific information about Clear Linux* and Vagrant
+  * About the Clear Linux* Vagrant boxes
+    - https://github.com/AntonioMeireles/ClearLinux-packer
+  * About the Clear Linux* Vagrant Guest Plugin
+    - https://github.com/AntonioMeireles/vagrant-guests-clearlinux
+  * Clear Linux* Vagrant boxes availability
+    - https://app.vagrantup.com/AntonioMeireles/boxes/ClearLinux
+
