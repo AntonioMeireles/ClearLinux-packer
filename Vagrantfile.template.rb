@@ -44,6 +44,11 @@ Vagrant.configure(2) do |config|
 
       {
         'mks.enable3d' => 'TRUE',
+        # avoid high CPU loads in macOS Catalina hosts (when in gfx mode)
+        #   per https://communities.vmware.com/thread/622273
+        'mks.enableMTLRenderer' => 'FALSE',
+        'mks.enableGLRenderer' => 'TRUE',
+
         'cpuid.coresPerSocket' => '1',
         'memsize' => '2048',
         'numvcpus' => '2'
