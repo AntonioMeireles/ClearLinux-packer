@@ -5,7 +5,7 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-export PACKER_VERSION=1.4.4
+export PACKER_VERSION=1.4.5
 
 GOPATH="$(mktemp -d)"
 export GOPATH
