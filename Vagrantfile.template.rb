@@ -1,4 +1,4 @@
-Vagrant.require_version '>= 2.1.5'
+Vagrant.require_version '>= 2.2.7'
 
 ENV['LC_ALL'] = 'en_US.UTF-8'
 
@@ -67,13 +67,14 @@ Vagrant.configure(2) do |config|
       '--memory' => 2048,
       '--cpus' => 2,
       '--hwvirtex' => 'on',
+      '--nested-hw-virt' => 'on',
       '--nestedpaging' => 'on',
       '--largepages' => 'on',
       '--vtxvpid' => 'on',
       '--vtxux' => 'on',
       '--graphicscontroller' => 'vmsvga',
       '--accelerate3d' => 'on',
-      '--clipboard' => 'bidirectional',
+      '--clipboard-mode' => 'bidirectional',
       '--draganddrop' => 'bidirectional'
     }.each { |k, v| vbox.customize ['modifyvm', :id, k.to_s, v.to_s] }
 

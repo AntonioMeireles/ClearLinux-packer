@@ -59,6 +59,7 @@ keyboard: us
 language: en_US.UTF-8
 timezone: UTC
 kernel: kernel-lts2018
+copySwupd: false
 
 kernel-arguments: {
   # add: ["nomodeset", "i915.modeset=0"]
