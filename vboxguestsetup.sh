@@ -51,9 +51,11 @@ done
 install -Dm0755 "${linux_bits}/other/98vboxadd-xclient" '/usr/bin/VBoxClient-all'
 install -Dm0644 "${linux_bits}/other/vboxclient.desktop" '/usr/share/xdg/autostart/vboxclient.desktop'
 
-install -m0755 "${linux_bits}/lib/"VBoxOGL*.so '/usr/lib64/'
-install -d '/usr/lib64/dri'
-ln -s '/usr/lib64/VBoxOGL.so' '/usr/lib64/dri/vboxvideo_dri.so'
+# gone with the wind - https://www.mail-archive.com/vbox-dev@virtualbox.org/msg09732.html
+#
+# install -m0755 "${linux_bits}/lib/"VBoxOGL*.so '/usr/lib64/'
+# install -d '/usr/lib64/dri'
+# ln -s '/usr/lib64/VBoxOGL.so' '/usr/lib64/dri/vboxvideo_dri.so'
 
 install -Dm0755 -D "${linux_bits}/other/pam_vbox.so" '/usr/lib64/security/pam_vbox.so'
 
