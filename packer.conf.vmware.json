@@ -1,69 +1,62 @@
 {
-	"variables": {
-		"cloud_token": "{{ env `VAGRANT_CLOUD_TOKEN` }}",
-		"version": "{{  env `VERSION` }}",
-		"name": "{{ env `BOX_NAME` }}",
-		"box_tag": "{{ env `REPOSITORY` }}"
-	},
-	"builders": [
-		{
-			"type": "vmware-vmx",
-			"source_path": "media/clear-{{user `version`}}-vmware-factory/ClearLinux-{{user `version`}}.vmx",
-			"boot_wait": "20s",
-			"ssh_username": "clear",
-			"ssh_password": "V@grant!",
-			"output_directory": "boxes/tmp",
-			"ssh_port": 22,
-			"ssh_wait_timeout": "5m",
-			"vm_name": "{{ user `name` }}",
-			"shutdown_command": "cat /dev/zero > zero.fill; sync; sleep 5; sync; rm -f zero.fill; sudo shutdown -P now",
-			"vmx_data": {
-				"cpuid.coresPerSocket": "1",
-				"memsize": "2048",
-				"numvcpus": "2"
-			},
-			"vmx_data_post": {
-				"cleanShutdown": "TRUE",
-				"softPowerOff": "FALSE",
-				"ethernet0.startConnected": "TRUE",
-				"ethernet0.wakeonpcktrcv": "false"
-			}
-		}
-	],
-	"provisioners": [
-		{
-			"type": "shell",
-			"inline": [
-				"sudo timedatectl set-ntp true"
-			],
-			"pause_before": "5s"
-		}, {
-			"type": "shell",
-			"expect_disconnect": true,
-			"start_retry_timeout": "600s",
-			"inline": [
-				"echo 'rebooting...'",
-				"sudo reboot"
-			]
-		}, {
-			"type": "shell",
-			"inline": [
-				"uname -a; swupd info"
-			],
-			"pause_before": "5s"
-		}
-	],
-	"post-processors": [
-		[
-			{
-				"type": "vagrant",
-				"output": "boxes/{{ .Provider }}/{{user `name` }}-{{ user `version`}}.{{ .Provider }}.box",
-				"compression_level": 9,
-				"vagrantfile_template": "Vagrantfile.template.rb",
-				"include": [
-					"info.json"
-				]
-			}
-		]
-	]
+  "variables": {
+    "cloud_token": "{{ env `VAGRANT_CLOUD_TOKEN` }}",
+    "version": "{{  env `VERSION` }}",
+    "name": "{{ env `BOX_NAME` }}",
+    "box_tag": "{{ env `REPOSITORY` }}"
+  },
+  "builders": [
+    {
+      "type": "vmware-vmx",
+      "source_path": "media/clear-{{user `version`}}-vmware-factory/ClearLinux-{{user `version`}}.vmx",
+      "boot_wait": "20s",
+      "ssh_username": "clear",
+      "ssh_password": "V@grant!",
+      "output_directory": "boxes/tmp",
+      "ssh_port": 22,
+      "ssh_timeout": "5m",
+      "vm_name": "{{ user `name` }}",
+      "shutdown_command": "cat /dev/zero > zero.fill; sync; sleep 5; sync; rm -f zero.fill; sudo shutdown -P now",
+      "vmx_data": {
+        "cpuid.coresPerSocket": "1",
+        "memsize": "2048",
+        "numvcpus": "2"
+      },
+      "vmx_data_post": {
+        "cleanShutdown": "TRUE",
+        "softPowerOff": "FALSE",
+        "ethernet0.startConnected": "TRUE",
+        "ethernet0.wakeonpcktrcv": "false"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": ["sudo timedatectl set-ntp true"],
+      "pause_before": "5s"
+    },
+    {
+      "type": "shell",
+      "expect_disconnect": true,
+      "start_retry_timeout": "600s",
+      "inline": ["echo 'rebooting...'", "sudo reboot"]
+    },
+    {
+      "type": "shell",
+      "inline": ["uname -a; swupd info"],
+      "pause_before": "5s"
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "type": "vagrant",
+        "output": "boxes/{{ .Provider }}/{{user `name` }}-{{ user `version`}}.{{ .Provider }}.box",
+        "compression_level": 9,
+        "vagrantfile_template": "Vagrantfile.template.rb",
+        "include": ["info.json"]
+      }
+    ]
+  ]
 }
