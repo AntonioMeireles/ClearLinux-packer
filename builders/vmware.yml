@@ -3,52 +3,52 @@
 version: latest
 
 block-devices:
-- name: "installer"
-  file: "installer.img"
+  - name: "installer"
+    file: "installer.img"
 
 users:
-- login: clear
-  username: "default Vagrant User"
-  admin: true
-  password: $6$BrJR1/svryBqhZZu$3wJdXRcnm7Kxqr8GfDrQXajz1.pRuQPGd2vyiQSHOaF34zYWYUOxQqGhnpjt/tt68LnjJ.thNjTR9Bw0E5DNo1
-  ssh-keys:
-  - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key
+  - login: clear
+    username: "default Vagrant User"
+    admin: true
+    password: $6$BrJR1/svryBqhZZu$3wJdXRcnm7Kxqr8GfDrQXajz1.pRuQPGd2vyiQSHOaF34zYWYUOxQqGhnpjt/tt68LnjJ.thNjTR9Bw0E5DNo1
+    ssh-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key
 
 targetMedia:
-- name: ${installer}
-  type: disk
-  size: "40G"
-  children:
-  - name: ${installer}1
-    fstype: vfat
-    mountpoint: /boot
-    size: "128M"
-    label: "boot"
-    type: part
-  - name: ${installer}2
-    fstype: swap
-    size: "256M"
-    label: "swap"
-    type: part
-  - name: ${installer}3
-    fstype: ext4
-    mountpoint: /
-    size: "0"
-    label: "root"
-    type: part
+  - name: ${installer}
+    type: disk
+    size: "40G"
+    children:
+      - name: ${installer}1
+        fstype: vfat
+        mountpoint: /boot
+        size: "128M"
+        label: "boot"
+        type: part
+      - name: ${installer}2
+        fstype: swap
+        size: "256M"
+        label: "swap"
+        type: part
+      - name: ${installer}3
+        fstype: ext4
+        mountpoint: /
+        size: "0"
+        label: "root"
+        type: part
 
 bundles:
-- os-core-update
-- os-cloudguest
-- os-cloudguest-vmware
-- sysadmin-basic
-- network-basic
-- systemd-networkd-autostart
-- vim
-- shells
-- containers-basic
-- patch
-- diffutils
+  - os-core-update
+  - os-cloudguest
+  - os-cloudguest-vmware
+  - sysadmin-basic
+  - network-basic
+  - systemd-networkd-autostart
+  - vim
+  - shells
+  - containers-basic
+  - patch
+  - diffutils
 
 autoUpdate: false
 postArchive: true
@@ -59,26 +59,24 @@ copyNetwork: false
 keyboard: us
 language: en_US.UTF-8
 timezone: UTC
-kernel: kernel-lts2018
+kernel: kernel-lts2019
 copySwupd: false
 
-kernel-arguments: {
-  # add: ["nomodeset", "i915.modeset=0"]
-}
+kernel-arguments: {}
 
 post-install:
-- cmd: "systemctl enable open-vm-tools"
-  chroot: true
-- cmd: "systemctl mask tallow"
-  chroot: true
-- cmd: "systemctl mask docker"
-  chroot: true
-- cmd: "systemctl mask clr-power clr-power.timer"
-  chroot: true
-- cmd: "systemctl enable systemd-timesyncd"
-  chroot: true
-- cmd: "systemctl enable sshd.socket"
-  chroot: true
-- cmd: "( cd ${yamlDir}/template; tar cvf - .) | ( cd ${chrootDir} ; tar xvf - --no-overwrite-dir --no-same-owner )"
-- cmd: "chmod -R 0550 /etc/sudoers.d/ && chmod 0600 /etc/ssh/sshd_config"
-  chroot: true
+  - cmd: "systemctl enable open-vm-tools"
+    chroot: true
+  - cmd: "systemctl mask tallow"
+    chroot: true
+  - cmd: "systemctl mask docker"
+    chroot: true
+  - cmd: "systemctl mask clr-power clr-power.timer"
+    chroot: true
+  - cmd: "systemctl enable systemd-timesyncd"
+    chroot: true
+  - cmd: "systemctl enable sshd.socket"
+    chroot: true
+  - cmd: "( cd ${yamlDir}/template; tar cvf - .) | ( cd ${chrootDir} ; tar xvf - --no-overwrite-dir --no-same-owner )"
+  - cmd: "chmod -R 0550 /etc/sudoers.d/ && chmod 0600 /etc/ssh/sshd_config"
+    chroot: true
