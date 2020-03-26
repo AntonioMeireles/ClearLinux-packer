@@ -5,12 +5,12 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-PACKER_VERSION=1.5.4
+PACKER_VERSION=1.5.5
 
 GOPATH="$(mktemp -d)"
 BUILDPATH="$(mktemp -d)"
 GO111MODULE=auto
-BUILDPATCH="$(dirname "${BASH_SOURCE[0]}")/justNativePackerBuild.patch"
+BUILDPATCH="$(cd `dirname $0` && pwd)/justNativePackerBuild.patch"
 
 export PACKER_VERSION
 export GOPATH
