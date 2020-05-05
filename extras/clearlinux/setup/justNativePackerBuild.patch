@@ -10,6 +10,7 @@ index 5ff399039..5a5946f3e 100755
 -ALL_XC_OS="linux darwin windows freebsd openbsd solaris"
 +ALL_XC_ARCH="amd64"
 +ALL_XC_OS="linux"
+ SKIPPED_OSARCH="!darwin/arm !darwin/arm64 !freebsd/arm !freebsd/arm64"
 
  # Exit immediately if a command fails
- set -e
+
