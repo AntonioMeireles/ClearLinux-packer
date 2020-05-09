@@ -40,7 +40,7 @@
       "type": "shell",
       "expect_disconnect": true,
       "start_retry_timeout": "600s",
-      "inline": ["echo 'rebooting...'", "sudo reboot"]
+      "inline": ["echo 'rebooting...'", "sudo systemctl reboot"]
     },
     {
       "type": "shell",
