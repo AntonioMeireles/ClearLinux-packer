@@ -52,7 +52,7 @@ bundles:
 autoUpdate: false
 postArchive: true
 postReboot: false
-LegacyBios: false
+legacyBios: false
 telemetry: false
 copyNetwork: false
 keyboard: us
