@@ -22,7 +22,7 @@
       "memory": 2048,
       "cpus": 2,
       "qemuargs": [["-bios", "/usr/share/qemu/OVMF.fd"]],
-      "iso_checksum_type": "none",
+      "iso_checksum": "none",
       "disk_image": true,
       "format": "qcow2",
       "accelerator": "kvm",

@@ -9,7 +9,7 @@
     {
       "type": "virtualbox-ovf",
       "source_path": "media/clear-{{user `version`}}-virtualbox-factory/ClearLinux-{{user `version`}}.ova",
-      "checksum_type": "none",
+      "checksum": "none",
       "boot_wait": "20s",
       "ssh_username": "clear",
       "ssh_password": "V@grant!",
