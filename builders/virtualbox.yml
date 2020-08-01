@@ -1,6 +1,7 @@
 #clear-linux-config
 
 version: latest
+swapFileSize: "256MB"
 
 block-devices:
   - name: "installer"
@@ -26,11 +27,6 @@ targetMedia:
         label: "boot"
         type: part
       - name: ${installer}2
-        fstype: swap
-        size: "256M"
-        label: "swap"
-        type: part
-      - name: ${installer}3
         fstype: ext4
         mountpoint: /
         size: "0"
