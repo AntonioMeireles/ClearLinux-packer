@@ -106,7 +106,7 @@ endef
 define boxSmokeTest
 	vagrant box add --name clear-test --provider $(provider) boxes/$1/$(NV).$1.box --force
 	( cd extras/test; vagrant up --provider $(provider) && \
-	vagrant ssh -c "w; sudo swupd info" &&                \
+	vagrant ssh -c "w; sudo swupd info ; echo ; df -kh" &&                \
 	vagrant halt -f && vagrant destroy -f &&             \
 	vagrant box remove clear-test --provider $(provider) )
 endef

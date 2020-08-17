@@ -26,7 +26,7 @@
       "disk_image": true,
       "format": "qcow2",
       "accelerator": "kvm",
-      "disk_size": 40960,
+      "disk_size": 5120,
       "net_device": "virtio-net",
       "disk_interface": "virtio"
     }

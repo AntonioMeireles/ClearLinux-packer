@@ -3,7 +3,7 @@
 ## Pre-requisites
 
 These boxes require the most recent
-[`vagrant-guests-clearlinux`](https://github.com/AntonioMeireles/vagrant-guests-clearlinux) plugin release, which *a priori* will be installed automatically when you use them
+[`vagrant-guests-clearlinux`](https://github.com/AntonioMeireles/vagrant-guests-clearlinux) plugin release, which _a priori_ will be installed automatically when you use them
 
 You can also manually install the [`vagrant-guests-clearlinux`](https://github.com/AntonioMeireles/vagrant-guests-clearlinux) plugin by...
 
@@ -71,7 +71,7 @@ on your **Clear Linux** setup _just_ run ...
 
 ## Tips & Tricks
 
-- take a deep look at the *guest* plugin available features and capabilities by reading its
+- take a deep look at the _guest_ plugin available features and capabilities by reading its
   [documentation](https://github.com/AntonioMeireles/vagrant-guests-clearlinux/blob/master/README.md)
   in order to take maximum advantage of this.
 
@@ -79,13 +79,14 @@ on your **Clear Linux** setup _just_ run ...
 
   When using **Virtualbox** or **VMware** if you wish to have access to the boot console you can boot them
   in graphical mode by invoking `vagrant` with `HEADLESS=false` set in your environment.
-- when using the **libvirt** provider by default it is assumed that the *libvirt* host is the same as
-  the vagrant host (*`localhost`*).
 
-  If you want Vagrant to target a remote *libvirt* host you will need to set it in `LIBVIRT_HOST`
+- when using the **libvirt** provider by default it is assumed that the _libvirt_ host is the same as
+  the vagrant host (_`localhost`_).
+
+  If you want Vagrant to target a remote _libvirt_ host you will need to set it in `LIBVIRT_HOST`
   when invoking `vagrant up`.
 
-  It is also assumed, by default, that the remote *libvirt* host is running Clear Linux what may or
+  It is also assumed, by default, that the remote _libvirt_ host is running Clear Linux what may or
   not be the case... If it isn't then the `LIBVIRT_USERNAME` will also need to be set.
 
   So, in order to target a remote, say Ubuntu, host what one would need to do would be along...
@@ -96,7 +97,7 @@ on your **Clear Linux** setup _just_ run ...
 
   > regarding **libvirt**: if running Vagrant over a macOS host the `vagrant-libvirt` won't install
   > correctly out of the box. You'll need to ensure in advance that `libvirt` is installed locally
-  >(for its headers) by running:
+  > (for its headers) by running:
   >
   > ```shell
   > brew install libvirt
@@ -104,12 +105,12 @@ on your **Clear Linux** setup _just_ run ...
   >
   > and then install the plugin but _only_ after pointing it the right locations...
   >
-  >  ```shell
+  > ```shell
   > CONFIGURE_ARGS='with-ldflags=-L/opt/vagrant/embedded/lib with-libvirt-include=/usr/local/include/libvirt with-libvirt-lib=/usr/local/lib' vagrant plugin install vagrant-libvirt
   > ```
 
-- if you want to consume additional **Vagrant** plugins from your *Vagrantfile* the preferred way to
-   do it is along the snippet bellow...
+- if you want to consume additional **Vagrant** plugins from your _Vagrantfile_ the preferred way to
+  do it is along the snippet bellow...
 
   ```ruby
   additional_plugins = {
@@ -159,6 +160,20 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
 - a ready to use, over Vagrant, native Clear Linux **libvirt** setup is available inside
   [`extras/libvirt.native`](./extras/libvirt.native/)
 - **All** boxes use para-virtualized drivers by default, when possible, for optimal performance.
+- Both the **VMware** and **VirtualBox** boxes ship with a 40GB partition size. **libvirt** boxes
+  ship, since mid August/2020, with a 5GB one (to resolve [#24](https://github.com/AntonioMeireles/ClearLinux-packer/issues/24)).
+  In order to increase the partition size in **libvirt** boxes just mod your `Vagrantfile` along...
+
+  ```ruby
+    Vagrant.configure(2) do |config|
+       ...
+       config.machine_virtual_size = DESIRED_GIGABYTES_AS_INTEGER
+       # so in order to create a 15GB instance one would add ...
+       # config.machine_virtual_size = 15
+       ...
+    end
+  ```
+
 - Graphical/Desktop performance optimization wasn't originally a primary concern as the Author's
   primary use case was towards headless use.
 
@@ -168,9 +183,10 @@ This project Vagrant boxes are hosted on **Vagrant Cloud** at
   Inside [`extras/gnome-desktop`](./extras/gnome-desktop/) there is a sample
   [`Vagrantfile`](./extras/gnome-desktop/Vagrantfile) that will fully setup and boot
   **[Gnome Desktop](https://www.gnome.org)** on top of **Clear Linux**.
-  > - Over a **VMware** hypervisor just make sure that you are using a *box* post `29520`
+
+  > - Over a **VMware** hypervisor just make sure that you are using a _box_ post `29520`
   >   - shared clipboard (copy/paste to/from host) works out of the box since `29780`.
-  > - Over **VirtualBox** just make sure you are using a *box* post `29610`
+  > - Over **VirtualBox** just make sure you are using a _box_ post `29610`
   >   - shared clipboard (copy/paste to/from host) works out of the box.
 
   So, if you happen to have a desktop oriented use case and something isn't still working as you'd

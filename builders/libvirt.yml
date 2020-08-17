@@ -18,7 +18,7 @@ users:
 targetMedia:
   - name: ${installer}
     type: disk
-    size: "40G"
+    size: "5G"
     children:
       - name: ${installer}1
         fstype: vfat
