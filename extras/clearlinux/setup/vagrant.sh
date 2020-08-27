@@ -14,7 +14,7 @@ fi
 # used to unpack boxes
 sudo swupd bundle-add {c,ruby,go}-basic devpkg-lib{virt,xml2,xslt,gpg-error,gcrypt} libarchive
 
-VAGRANT_VERSION=2.2.9
+VAGRANT_VERSION=2.2.10
 VAGRANT_ZIP="v${VAGRANT_VERSION}.zip"
 VAGRANT_URL=https://github.com/hashicorp/vagrant/archive/${VAGRANT_ZIP}
 
@@ -52,12 +52,6 @@ pushd ${source_dir}
   export GEMRC="${EMBEDDED_DIR}/etc/gemrc"
 
   sudo mkdir -p ${GEM_PATH}
-  # relax ruby version requirements so this package can be built with the latest ruby until upstream
-  # sorts it right. loaned from Arch's.
-  # handles #25
-  sed 's/s.required_ruby_version     = "~> 2.4", "< 2.7"//' -i vagrant.gemspec
-  wget https://github.com/archlinux/svntogit-community/raw/packages/vagrant/trunk/ruby-2.7-fixes.patch
-  patch -p1 < ruby-2.7-fixes.patch
 
   gem build vagrant.gemspec
   sudo -E gem install pkg-config vagrant-${VAGRANT_VERSION}.gem --no-document
