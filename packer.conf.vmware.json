@@ -16,7 +16,7 @@
       "ssh_port": 22,
       "ssh_timeout": "5m",
       "vm_name": "{{ user `name` }}",
-      "shutdown_command": "cat /dev/zero > zero.fill; sync; sleep 5; sync; rm -f zero.fill; sudo shutdown -P now",
+      "shutdown_command": "cat /dev/zero > zero.fill; sudo sync; sleep 5; sudo sync; rm -f zero.fill; sudo shutdown -P now",
       "vmx_data": {
         "cpuid.coresPerSocket": "1",
         "memsize": "2048",

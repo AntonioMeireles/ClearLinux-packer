@@ -16,7 +16,7 @@
       "ssh_port": 22,
       "ssh_timeout": "5m",
       "vm_name": "{{ user `name` }}",
-      "shutdown_command": "cat /dev/zero > zero.fill; sync; sleep 5; sync; rm -f zero.fill; sudo shutdown -P now",
+      "shutdown_command": "sudo fstrim -a -v && sudo sync && sudo shutdown -P now",
       "use_default_display": true,
       "headless": false,
       "memory": 2048,
@@ -28,7 +28,9 @@
       "accelerator": "kvm",
       "disk_size": 5120,
       "net_device": "virtio-net",
-      "disk_interface": "virtio"
+      "disk_interface": "virtio-scsi",
+      "disk_discard": "unmap",
+      "disk_detect_zeroes": "unmap"
     }
   ],
   "provisioners": [
