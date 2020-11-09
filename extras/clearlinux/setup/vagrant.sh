@@ -14,7 +14,7 @@ fi
 # used to unpack boxes
 sudo swupd bundle-add {c,ruby,go}-basic devpkg-lib{virt,xml2,xslt,gpg-error,gcrypt} libarchive
 
-VAGRANT_VERSION=2.2.10
+VAGRANT_VERSION=2.2.13
 VAGRANT_ZIP="v${VAGRANT_VERSION}.zip"
 VAGRANT_URL=https://github.com/hashicorp/vagrant/archive/${VAGRANT_ZIP}
 
@@ -54,7 +54,8 @@ pushd ${source_dir}
   sudo mkdir -p ${GEM_PATH}
 
   gem build vagrant.gemspec
-  sudo -E gem install pkg-config vagrant-${VAGRANT_VERSION}.gem --no-document
+  sudo -E gem uninstall net-ssh net-scp -a --force
+  sudo -E gem install pkg-config vagrant-${VAGRANT_VERSION}.gem --no-document --prerelease
 
   sudo rm -rf ${GEM_PATH}/gems/vagrant-${VAGRANT_VERSION}/vagrant-installers
 
