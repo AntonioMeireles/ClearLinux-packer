@@ -6,7 +6,7 @@ set -o nounset
 
 
 export TERRAFORM_VERSION=0.13.5
-export TERRAFORM_PROVIDER_LIBVIRT_VERSION=0.6.2
+export TERRAFORM_PROVIDER_LIBVIRT_VERSION=0.6.3
 export LIBVIRT_PLUGIN_DIR=~/.local/share/terraform/plugins/registry.terraform.io/dmacvicar/libvirt/${TERRAFORM_PROVIDER_LIBVIRT_VERSION}/linux_amd64
 
 export TERRAFORM_URL=https://github.com/hashicorp/terraform/archive/v${TERRAFORM_VERSION}.zip
