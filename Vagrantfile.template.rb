@@ -113,17 +113,15 @@ Vagrant.configure(2) do |config|
                     type: 'unix',
                     target_type: 'virtio'
   end
-  if ENV.keys.grep(/(http(|s)|no)_proxy/i).any?
-    if Vagrant.has_plugin?('vagrant-proxyconf')
-      w = proxy_whitelisted.empty? ? '' : ",#{proxy_whitelisted}".to_s
+  if ENV.keys.grep(/(http(|s)|no)_proxy/i).any? && Vagrant.has_plugin?('vagrant-proxyconf')
+    w = proxy_whitelisted.empty? ? '' : ",#{proxy_whitelisted}".to_s
 
-      config.proxy.http     = (ENV['http_proxy'] || ENV['HTTP_PROXY'])
-      config.proxy.https    = (ENV['https_proxy'] || ENV['HTTPS_PROXY'])
-      config.proxy.no_proxy =
-        (ENV['no_proxy'] || ENV['NO_PROXY'] || 'localhost,127.0.0.1').to_s + w
+    config.proxy.http     = (ENV['http_proxy'] || ENV['HTTP_PROXY'])
+    config.proxy.https    = (ENV['https_proxy'] || ENV['HTTPS_PROXY'])
+    config.proxy.no_proxy =
+      (ENV['no_proxy'] || ENV['NO_PROXY'] || 'localhost,127.0.0.1').to_s + w
 
-      # since we've been masking it by default ...
-      config.proxy.enabled  = { docker: false }
-    end
+    # since we've been masking it by default ...
+    config.proxy.enabled  = { docker: false }
   end
 end
