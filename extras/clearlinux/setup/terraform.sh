@@ -5,7 +5,7 @@ set -o pipefail
 set -o nounset
 
 
-export TERRAFORM_VERSION=0.14.5
+export TERRAFORM_VERSION=0.14.7
 export TERRAFORM_PROVIDER_LIBVIRT_VERSION=0.6.3
 export LIBVIRT_PLUGIN_DIR=~/.local/share/terraform/plugins/registry.terraform.io/dmacvicar/libvirt/${TERRAFORM_PROVIDER_LIBVIRT_VERSION}/linux_amd64
 
