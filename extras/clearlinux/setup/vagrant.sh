@@ -55,7 +55,7 @@ pushd ${source_dir}
 
   gem build vagrant.gemspec
   sudo -E gem uninstall net-ssh net-scp -a --force
-  sudo -E gem install pkg-config vagrant-${VAGRANT_VERSION}.gem --no-document --prerelease
+  sudo -E gem install pkg-config=1.4.4 vagrant-${VAGRANT_VERSION}.gem --no-document --prerelease
 
   sudo rm -rf ${GEM_PATH}/gems/vagrant-${VAGRANT_VERSION}/vagrant-installers
 
