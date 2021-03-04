@@ -90,7 +90,7 @@ define vmxBuilder
 endef
 
 define pack
-	packer build -force -only=$(strip $(builder)) packer.conf.$1.json
+	packer build -force  $1.pkr.hcl
 endef
 
 define builder
@@ -126,9 +126,8 @@ define boxUpload
 endef
 
 define addProviderToRelease
-	curl -s $(isJson) $(authBearer) $(VAGRANT_REPO)/version/${VERSION}/providers \
-		--data '{"provider": {"name": "$(if $(filter $1,vmware),vmware_desktop,$1)"}}' && \
-		echo "- added '$1' provider to '$(OWNER)/$(BOX_NAME)/$(VERSION)'"
+	@echo && curl -s $(isJson) $(authBearer) $(VAGRANT_REPO)/version/${VERSION}/providers --data '{"provider": {"name": "$(if $(filter $1,vmware),vmware_desktop,$1)"}}' && \
+		echo "- added '$1' provider to '$(OWNER)/$(BOX_NAME)/$(VERSION)'\n"
 endef
 
 .PHONY: help
@@ -182,11 +181,10 @@ boxes/vmware/$(NV).vmware.box: $(call mediaFactory,vmware)/$(NV).vmx
 	$(call pack,vmware)
 
 release: ## Vagrant Cloud  Create a new release
-	( cat new.tmpl.json | envsubst | curl --silent $(isJson) $(authBearer) $(VAGRANT_REPO)/versions \
-		--data-binary @- ) && echo "- '$(OWNER)/$(BOX_NAME)/$(VERSION)' release created on Vagrant Cloud"
-	$(call addProviderToRelease,libvirt)
-	$(call addProviderToRelease,vmware)
-	$(call addProviderToRelease,virtualbox)
+	@echo && ( cat new.tmpl.json | envsubst | curl --silent $(isJson) $(authBearer) $(VAGRANT_REPO)/versions --data-binary @- 2>/dev/null ) \
+		&& echo "- '$(OWNER)/$(BOX_NAME)/$(VERSION)' release created on Vagrant Cloud"
+
+	$(foreach p, $(PROVIDERS), $(call addProviderToRelease,$(p)))
 
 upload: $(foreach p,$(PROVIDERS),upload-$(p)-box) ## Vagrant Cloud  Uploads all built boxes for version
 
