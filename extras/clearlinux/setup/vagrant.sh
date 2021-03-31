@@ -14,7 +14,7 @@ fi
 # used to unpack boxes
 sudo swupd bundle-add {c,ruby,go}-basic devpkg-lib{virt,xml2,xslt,gpg-error,gcrypt} libarchive
 
-VAGRANT_VERSION=2.2.14
+VAGRANT_VERSION=2.2.15
 VAGRANT_ZIP="v${VAGRANT_VERSION}.zip"
 VAGRANT_URL=https://github.com/hashicorp/vagrant/archive/${VAGRANT_ZIP}
 
@@ -30,7 +30,7 @@ unzip -qq "${zipfile}" -d /tmp
 source_dir="/tmp/vagrant-${VAGRANT_VERSION}"
 
 function cleanup() {
-  rm -rf ${source_dir} "${GOPATH}" "${zipfile}"
+  sudo rm -rf ${source_dir} "${GOPATH}" "${zipfile}"
 }
 
 trap cleanup EXIT
