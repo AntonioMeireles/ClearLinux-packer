@@ -55,10 +55,10 @@ build {
   provisioner "shell" {
     expect_disconnect   = true
     inline              = ["echo 'rebooting...'", "sudo systemctl reboot"]
-    start_retry_timeout = "600s"
   }
 
   provisioner "shell" {
+    start_retry_timeout = "600s"
     inline = ["uname -a; swupd info"]
   }
 
