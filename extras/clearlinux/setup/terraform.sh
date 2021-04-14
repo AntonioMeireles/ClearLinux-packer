@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-export TERRAFORM_VERSION=0.14.10
+export TERRAFORM_VERSION=0.15.0
 export TERRAFORM_PROVIDER_LIBVIRT_VERSION=0.6.3
 
 export TERRAFORM_URL=https://github.com/hashicorp/terraform/archive/v${TERRAFORM_VERSION}.zip
