@@ -126,8 +126,8 @@ define boxUpload
 endef
 
 define addProviderToRelease
-	@echo && curl -s $(isJson) $(authBearer) $(VAGRANT_REPO)/version/${VERSION}/providers --data '{"provider": {"name": "$(if $(filter $1,vmware),vmware_desktop,$1)"}}' && \
-		echo "- added '$1' provider to '$(OWNER)/$(BOX_NAME)/$(VERSION)'\n"
+	@echo $(shell curl -s $(isJson) $(authBearer) $(VAGRANT_REPO)/version/${VERSION}/providers --data '{"provider": {"name": "$(if $(filter $1,vmware),vmware_desktop,$1)"}}' >/dev/null  && \
+	echo "- added '$1' provider to '$(OWNER)/$(BOX_NAME)/$(VERSION)'\n")
 endef
 
 .PHONY: help
@@ -181,8 +181,9 @@ boxes/vmware/$(NV).vmware.box: $(call mediaFactory,vmware)/$(NV).vmx
 	$(call pack,vmware)
 
 release: ## Vagrant Cloud  Create a new release
-	@echo && ( cat new.tmpl.json | envsubst | curl --silent $(isJson) $(authBearer) $(VAGRANT_REPO)/versions --data-binary @- 2>/dev/null ) \
+	@echo && ( cat new.tmpl.json | envsubst | curl --silent $(isJson) $(authBearer) $(VAGRANT_REPO)/versions --data-binary @- >/dev/null ) \
 		&& echo "- '$(OWNER)/$(BOX_NAME)/$(VERSION)' release created on Vagrant Cloud"
+	@echo
 
 	$(foreach p, $(PROVIDERS), $(call addProviderToRelease,$(p)))
 
