@@ -22,7 +22,7 @@ variable "version" {
 source "qemu" "libvirt" {
   accelerator         = "kvm"
   boot_wait           = "20s"
-  cpus                = 1
+  cpus                = 2
   disk_detect_zeroes  = "unmap"
   disk_discard        = "unmap"
   disk_image          = true
