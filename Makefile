@@ -121,13 +121,13 @@ endef
 
 define boxUpload
 	@echo "- '$(OWNER)/$(BOX_NAME)/$(VERSION)/$1' uploading..."
-	@curl `curl -s $(authBearer) $(VAGRANT_REPO)/version/${VERSION}/provider/$(if $(filter $1, vmware),vmware_desktop,$1)/upload | jq .upload_path | tr -d \"` \
+	@curl $(shell curl -s $(authBearer) $(VAGRANT_REPO)/version/${VERSION}/provider/$(if $(filter $1, vmware),vmware_desktop,$1)/upload | jq .upload_path | tr -d \") \
 		--upload-file boxes/$1/$(NV).$1.box && echo "- '$(OWNER)/$(BOX_NAME)/$(VERSION)/$1' uploaded"
 endef
 
 define addProviderToRelease
-	@echo $(shell curl -s $(isJson) $(authBearer) $(VAGRANT_REPO)/version/${VERSION}/providers --data '{"provider": {"name": "$(if $(filter $1,vmware),vmware_desktop,$1)"}}' >/dev/null  && \
-	echo "- added '$1' provider to '$(OWNER)/$(BOX_NAME)/$(VERSION)'\n")
+	@echo "- adding '$1' provider to '$(OWNER)/$(BOX_NAME)/$(VERSION)'\n"
+	$(shell curl -s $(isJson) $(authBearer) $(VAGRANT_REPO)/version/${VERSION}/providers --data '{"provider": {"name": "$(if $(filter $1,vmware),vmware_desktop,$1)"}}' >/dev/null )
 endef
 
 .PHONY: help
@@ -181,8 +181,7 @@ boxes/vmware/$(NV).vmware.box: $(call mediaFactory,vmware)/$(NV).vmx
 	$(call pack,vmware)
 
 release: ## Vagrant Cloud  Create a new release
-	@echo && ( cat new.tmpl.json | envsubst | curl --silent $(isJson) $(authBearer) $(VAGRANT_REPO)/versions --data-binary @- >/dev/null ) \
-		&& echo "- '$(OWNER)/$(BOX_NAME)/$(VERSION)' release created on Vagrant Cloud"
+	@echo "- '$(OWNER)/$(BOX_NAME)/$(VERSION)' creating release on Vagrant Cloud" &&	( cat new.tmpl.json | envsubst | curl --silent $(isJson) $(authBearer) $(VAGRANT_REPO)/versions --data-binary @- >/dev/null )
 	@echo
 
 	$(foreach p, $(PROVIDERS), $(call addProviderToRelease,$(p)))
