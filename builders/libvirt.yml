@@ -55,7 +55,7 @@ copyNetwork: false
 keyboard: us
 language: en_US.UTF-8
 timezone: UTC
-kernel: kernel-lts2019
+kernel: kernel-lts2020
 copySwupd: false
 
 kernel-arguments: {}
