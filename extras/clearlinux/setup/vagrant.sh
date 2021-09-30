@@ -14,7 +14,7 @@ fi
 # used to unpack boxes
 sudo swupd bundle-add {c,ruby,go}-basic devpkg-lib{virt,xml2,xslt,gpg-error,gcrypt} libarchive
 
-VAGRANT_VERSION=2.2.15
+VAGRANT_VERSION=2.2.18
 VAGRANT_ZIP="v${VAGRANT_VERSION}.zip"
 VAGRANT_URL=https://github.com/hashicorp/vagrant/archive/${VAGRANT_ZIP}
 
@@ -44,18 +44,18 @@ pushd ${source_dir}
     go build -o vagrant
   popd
 
-  sudo install -D -m 0644 ${substrate_dir}/common/gemrc "${EMBEDDED_DIR}/etc/gemrc"
-  sudo install -D -m 0644 ${substrate_dir}/{linux,common}/rgloader/* -t "${EMBEDDED_DIR}/rgloader/"
-
+  export GEMRC="${EMBEDDED_DIR}/etc/gemrc"
   export GEM_PATH="${EMBEDDED_DIR}/gems/${VAGRANT_VERSION}"
   export GEM_HOME="${GEM_PATH}"
-  export GEMRC="${EMBEDDED_DIR}/etc/gemrc"
 
+  sudo install -D -m 0644 ${substrate_dir}/common/gemrc "${GEMRC}"
   sudo mkdir -p ${GEM_PATH}
 
   gem build vagrant.gemspec
-  sudo -E gem uninstall net-ssh net-scp -a --force
-  sudo -E gem install pkg-config=1.4.4 vagrant-${VAGRANT_VERSION}.gem --no-document --prerelease
+
+  sudo -E gem install pkg-config vagrant-${VAGRANT_VERSION}.gem --no-document --prerelease
+  # workaround for gems dep resolution woes
+  sudo sed -i 's/>= 2.6.5/>= 6.2.0.rc2/g' "${GEM_PATH}/specifications/net-scp-3.0.0.gemspec"
 
   sudo rm -rf ${GEM_PATH}/gems/vagrant-${VAGRANT_VERSION}/vagrant-installers
 
@@ -66,6 +66,7 @@ pushd ${source_dir}
   echo '{"version":"1","installed":{}}' | sudo tee ${EMBEDDED_DIR}/plugins.json
   sudo chmod 0644 ${EMBEDDED_DIR}/*.json
 
+  export CFLAGS="-I/usr/include/ruby-3.0.0/ruby/"
   # for some reason getting transient breakage if installing more than one plugin at once (!)...
   vagrant plugin install vagrant-libvirt
   vagrant plugin install vagrant-guests-clearlinux
