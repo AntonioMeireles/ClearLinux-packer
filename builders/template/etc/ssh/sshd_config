@@ -4,6 +4,8 @@ PermitEmptyPasswords no
 PasswordAuthentication no
 PermitRootLogin no
 AuthorizedKeysFile %h/.ssh/authorized_keys
+# needed for openssh 8.8+
+PubkeyAcceptedKeyTypes=+ssh-rsa
 
 # 120s/60m
 ClientAliveInterval 120
