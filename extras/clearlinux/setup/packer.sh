@@ -5,7 +5,7 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-PACKER_VERSION=1.7.9
+PACKER_VERSION=1.7.10
 
 GOPATH="$(mktemp -d)"
 BUILDPATH="$(mktemp -d)"
